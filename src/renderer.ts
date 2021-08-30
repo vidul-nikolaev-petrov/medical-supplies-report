@@ -28,6 +28,6 @@
 
 import './index.css';
 
-import './react/app';
+import './react/app/app';
 
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
