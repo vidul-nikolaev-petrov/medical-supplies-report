@@ -15,18 +15,42 @@ if (require("electron-squirrel-startup")) {
 
 const createWindow = (): void => {
     // Create the browser window.
+
+    const loadWindow = new BrowserWindow({
+        height: 80,
+        width: 400,
+        show: false,
+        frame: false,
+    });
+
     const mainWindow = new BrowserWindow({
         height: 600,
         width: 800,
         webPreferences: {},
+        show: false,
+        frame: false,
     });
 
+    loadWindow.once("show", () => {
+        mainWindow.webContents.once("dom-ready", () => {
+            setTimeout(() => {
+                mainWindow.show();
+                loadWindow.hide();
+                loadWindow.close();
+            }, 2000);
+        });
+        // long loading html
+        mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    });
+    loadWindow.loadURL(`file://${__dirname}/../../src/loading.html`);
+    loadWindow.show();
+
     // and load the index.html of the app.
-    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    // mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     // Open the DevTools.
     // if (process.env["ENV"] === "dev") {
-        mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
     // }
 };
 
