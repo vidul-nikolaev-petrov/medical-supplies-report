@@ -39,7 +39,10 @@ const createWindow = (): void => {
         show: false,
         frame: false,
         webPreferences: {
-            nodeIntegration: false,
+            contextIsolation: false,
+            nodeIntegration: true,
+            nodeIntegrationInWorker: true,
+            nodeIntegrationInSubFrames: true,
         },
     });
 
