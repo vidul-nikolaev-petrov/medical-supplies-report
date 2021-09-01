@@ -1,10 +1,10 @@
 import { app, BrowserWindow } from "electron";
 import log from "electron-log";
 import path from "path";
-import pjson from "./../package.json";
+import pjson from "../package.json";
 
 log.transports.file.level = "info";
-log.transports.file.file = path.join(__dirname, "/log.log");
+log.transports.file.file = path.join(__dirname, "log.log");
 
 function isDebug() {
     return process.env.npm_lifecycle_event === "start";
@@ -43,6 +43,7 @@ const createWindow = (): void => {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
             nodeIntegrationInSubFrames: true,
+            // webSecurity: false,
         },
     });
 
@@ -59,7 +60,7 @@ const createWindow = (): void => {
     });
 
     if (isDebug()) {
-        loadWindow.loadFile("src/loading.html");
+        loadWindow.loadFile(path.join("src", "loading.html"));
     } else {
         loadWindow.loadFile(path.join(pjson.main, "loading.html"));
     }
@@ -70,9 +71,9 @@ const createWindow = (): void => {
     // mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     // Open the DevTools.
-    if (isDebug()) {
-        mainWindow.webContents.openDevTools();
-    }
+    // if (isDebug()) {
+    mainWindow.webContents.openDevTools();
+    // }
 };
 
 // This method will be called when Electron has finished
