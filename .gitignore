@@ -90,3 +90,7 @@ dist
 
 # Electron-Forge
 out/
+
+# Repository
+
+repo/*
