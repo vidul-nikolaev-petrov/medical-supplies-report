@@ -20,3 +20,7 @@ function getRootDir(): string {
 function getRepoDir(): string {
     return path.join(getRootDir(), "repo");
 }
+
+export function sum(a: number, b: number): number {
+    return a + b;
+}
