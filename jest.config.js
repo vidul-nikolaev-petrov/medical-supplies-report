@@ -7,6 +7,6 @@ module.exports = {
     collectCoverage: true,
     verbose: true,
     // testPathIgnorePatterns: ["/node_modules/", "/out/"],
-    testRegex: "./src/.*(.+)_test_\\.tsx?$",
+    testRegex: "./src/.+\\.test\\.tsx?$",
     setupFilesAfterEnv: ['./jest.setup.js'],
 };
