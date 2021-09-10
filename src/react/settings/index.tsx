@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { writeDate } from "../../lib/settings/fs";
+import { writeDate } from "../../lib/settings/misc";
 
 function Settings(): JSX.Element {
     writeDate();

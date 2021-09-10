@@ -1,7 +1,11 @@
-const fs = window.require("fs");
+const node_fs = window.require("fs");
 const path = window.require("path");
 
-const msFS = new Proxy(fs, {
+// Global constants
+const REPO = "repo";
+
+
+const fs = new Proxy(node_fs, {
     get(target, propName) {
         const prop = target[propName];
 
@@ -14,43 +18,27 @@ const msFS = new Proxy(fs, {
             let subdir = undefined;
 
             if (isDebug() === false) {
-                if (dir.startsWith("repo")) {
+                if (dir.startsWith(REPO)) {
                     subdir = dir.split("/");
                     dir = subdir.shift();
-                    dir = path.join(getRootDir(), "repo");
+                    dir = path.join(getRootDir(), REPO);
                     dir = path.join(dir, ...subdir);
                 }
 
                 args[0] = dir;
             }
 
-            console.log(">>>", args);
-
             prop.apply(target, args);
         };
     },
 });
 
-export function writeDate(): any {
-    // const dest = isDebug()
-    //     ? path.join("repo", "Date.txt")
-    //     : path.join(getRepoDir(), "Date.txt");
-
-    msFS.writeFileSync("repo/Date.txt", Date() + "\n\n", () => {});
-}
-
-function isDebug() {
-    return process.env.npm_lifecycle_event === "start";
-}
-
 function getRootDir(): string {
     return path.join(__dirname, "..", "..");
 }
 
-function getRepoDir(): string {
-    return path.join(getRootDir(), "repo");
+function isDebug(): boolean {
+    return process.env.npm_lifecycle_event === "start";
 }
 
-export function sum(a: number, b: number): number {
-    return a + b;
-}
+export default fs;
