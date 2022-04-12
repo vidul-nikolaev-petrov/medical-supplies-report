@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { HashRouter, Link, Route, Routes } from "react-router-dom";
+import { HashRouter, NavLink, Route, Routes } from "react-router-dom";
 import Home from "./home/home";
 import History from "./history/history";
 import Settings from "./settings/index";
 import Settings_User from "./settings/user";
 import About from "./about/about";
 import Error from "./error/error";
-import { AuthProvider, useAuth } from "./context/auth";
+import { AuthProvider, ProtectedRoute, useAuth } from "./context/auth";
 
 render();
 
@@ -27,8 +27,22 @@ function App(): JSX.Element {
         <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/settings/index" element={<Settings />} />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute>
+                <History />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings/index"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/settings/user" element={<Settings_User />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Error />} />
@@ -43,10 +57,10 @@ function Navigation(): JSX.Element {
 
   return (
     <div>
-      <Link to="/">Home</Link> &nbsp;
-      <Link to="/history">History</Link> &nbsp;
-      <Link to="/settings/index">Settings</Link> &nbsp;
-      <Link to="/about">About</Link> &nbsp;
+      <NavLink to="/">Home</NavLink> &nbsp;
+      <NavLink to="/history">History</NavLink> &nbsp;
+      <NavLink to="/settings/index">Settings</NavLink> &nbsp;
+      <NavLink to="/about">About</NavLink> &nbsp;
       {token && (
         <button type="button" onClick={onLogout}>
           Sign Out

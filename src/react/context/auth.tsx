@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { Navigate,useNavigate } from "react-router-dom";
 
 const AuthContext = React.createContext(null);
 
@@ -13,12 +14,14 @@ export const useAuth: any = () => {
 };
 
 export const AuthProvider: FC = ({ children }) => {
+  const navigate = useNavigate();
   const [token, setToken] = React.useState(null);
 
   const handleLogin = async () => {
     const token = await fakeAuth();
 
     setToken(token);
+    navigate("/history");
   };
 
   const handleLogout = () => {
@@ -33,3 +36,13 @@ export const AuthProvider: FC = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export const ProtectedRoute: any = ({ children }) => {
+    const { token } = useAuth();
+  
+    if (!token) {
+      return <Navigate to="/" replace />;
+    }
+  
+    return children;
+  };
