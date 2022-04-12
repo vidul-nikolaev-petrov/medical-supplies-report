@@ -1,7 +1,11 @@
 import React from "react";
 
 function About(): JSX.Element {
-    return <h1>About MS</h1>
+  return (
+    <>
+      <h1>About MS</h1>
+    </>
+  );
 }
 
 export default About;
