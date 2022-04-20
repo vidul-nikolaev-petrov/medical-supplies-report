@@ -1,12 +1,12 @@
 import React, { FC } from "react";
-import { Navigate,useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const AuthContext = React.createContext(null);
 
-async function fakeAuth(): Promise<string> {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve("2342f2f1d131rf12"), 0);
-  });
+function fakeAuth(): string {
+  sessionStorage.setItem("user", "nice user-123321 ");
+  console.log(localStorage.getItem("user"));
+  return sessionStorage.getItem("user");
 }
 
 export const useAuth: any = () => {
@@ -17,14 +17,15 @@ export const AuthProvider: FC = ({ children }) => {
   const navigate = useNavigate();
   const [token, setToken] = React.useState(null);
 
-  const handleLogin = async () => {
-    const token = await fakeAuth();
+  const handleLogin = () => {
+    const token = fakeAuth();
 
     setToken(token);
-    navigate("/history");
+    navigate("/");
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("user");
     setToken(null);
   };
 
@@ -38,11 +39,11 @@ export const AuthProvider: FC = ({ children }) => {
 };
 
 export const ProtectedRoute: any = ({ children }) => {
-    const { token } = useAuth();
-  
-    if (!token) {
-      return <Navigate to="/" replace />;
-    }
-  
-    return children;
-  };
+  const { token } = useAuth();
+
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
