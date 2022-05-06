@@ -8,6 +8,8 @@ import Settings_User from "./settings/user";
 import About from "./about/about";
 import Error from "./error/error";
 import { AuthProvider, ProtectedRoute, useAuth } from "./context/auth";
+import Login from "./user/login";
+import { Button } from "react-bootstrap";
 
 render();
 
@@ -44,6 +46,7 @@ function App(): JSX.Element {
             }
           />
           <Route path="/settings/user" element={<Settings_User />} />
+          <Route path="/user/login" element={<Login />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Error />} />
         </Routes>
@@ -61,11 +64,13 @@ function Navigation(): JSX.Element {
       <NavLink to="/history">History</NavLink> &nbsp;
       <NavLink to="/settings/index">Settings</NavLink> &nbsp;
       <NavLink to="/about">About</NavLink> &nbsp;
-      {token && (
-        <button type="button" onClick={onLogout}>
-          Sign Out
-        </button>
-      )}
+      <div className="mb-2">
+        {token && (
+          <Button variant="info" onClick={onLogout}>
+            Sign Out
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

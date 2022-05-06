@@ -3,11 +3,11 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const AuthContext = React.createContext(null);
 
-function fakeAuth(): string {
-  sessionStorage.setItem("user", "nice user-123321 ");
-  console.log(localStorage.getItem("user"));
-  return sessionStorage.getItem("user");
-}
+// function fakeAuth(): string {
+//   sessionStorage.setItem("user", "nice user-123321 ");
+//   console.log(sessionStorage.getItem("user"));
+//   return sessionStorage.getItem("user");
+// }
 
 export const useAuth: any = () => {
   return React.useContext(AuthContext);
@@ -18,10 +18,10 @@ export const AuthProvider: FC = ({ children }) => {
   const [token, setToken] = React.useState(null);
 
   const handleLogin = () => {
-    const token = fakeAuth();
+    // const token = fakeAuth();
 
-    setToken(token);
-    navigate("/");
+    // setToken(token);
+    navigate("/user/login");
   };
 
   const handleLogout = () => {

@@ -1,5 +1,7 @@
 import React from "react";
 import { useAuth } from "../context/auth";
+import { Button } from "react-bootstrap";
+
 
 function Home(): JSX.Element {
   const { token, onLogin } = useAuth();
@@ -12,9 +14,9 @@ function Home(): JSX.Element {
           Welcome <b>{token}</b>
         </span>
       ) : (
-        <button type="button" onClick={onLogin}>
+        <Button variant="info" onClick={onLogin}>
           Sign In
-        </button>
+        </Button>
       )}
     </>
   );
