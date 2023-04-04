@@ -26,7 +26,9 @@
  * ```
  */
 
- import 'bootstrap/dist/css/bootstrap.min.css';
- import './react/index';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css";
+import "./react/index";
+
 
 // console.log('👋 This message is being logged by "renderer.js", included via webpack');
