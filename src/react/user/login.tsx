@@ -1,8 +1,8 @@
-import React from "react";
+import { useState } from "react";
 
 function Login(): JSX.Element {
-  const [token, setToken] = React.useState(null);
-  
+  const [token, setToken] = useState(null);
+
   return <h1>Login</h1>;
 }
 
