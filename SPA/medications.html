@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Цени на Лекарства</title>
+        <title>Лекарствен Отчет</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
         <style>
             body {
@@ -82,6 +82,13 @@
                 font-size: medium;
                 width: 100px;
             }
+
+            span.th {
+                text-align: center;
+                font-size: small;
+                display: inline-block;
+                width: 44%;
+            }
         </style>
     </head>
     <body>
@@ -90,9 +97,14 @@
         <table id="items">
             <thead>
                 <tr>
-                    <th width="40%">Име</th>
-                    <th width="20%">Количество</th>
-                    <th width="20%">Цена</th>
+                    <th width="40%">НАИМЕНОВАНИЕ</th>
+                    <th width="20%" colspan="2">
+                        <div>ОСТАТЪК</div>
+                        <div class="th">
+                            <span class="th">Количество</span>
+                            <span class="th">Сума</span>
+                        </div>
+                    </th>
                     <th width="10%">&#8721;</th>
                     <th width="10%">&#128465;</th>
                 </tr>
