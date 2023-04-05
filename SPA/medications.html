@@ -191,13 +191,13 @@
                 },
                 updateOutgo = () => {
                     const totalPrice = items
-                            .filter(e => e.outgoQuantity)
-                            .reduce(
-                                (acc, item) =>
-                                    acc + item.outgoQuantity * item.price,
-                                0
-                            )
-                            .toFixed(2);
+                        .filter((e) => e.outgoQuantity)
+                        .reduce(
+                            (acc, item) =>
+                                acc + item.outgoQuantity * item.price,
+                            0
+                        )
+                        .toFixed(2);
                     totalOutgoPriceEl.textContent = totalPrice;
                 };
 
@@ -224,17 +224,22 @@
                         inputOutgoQuantity = document.createElement("input"),
                         removeBtn = document.createElement("button"),
                         updateRowPrice = () => {
-                            if (!(inputQuantity.value && inputPrice.value))
-                                return;
-                            tdTotalPrice.innerText = (
-                                parseInt(inputQuantity.value, 10) *
-                                parseFloat(inputPrice.value)
-                            ).toFixed(2);
+                            console.log(">>", inputQuantity.value)
+                            if (inputQuantity.value && inputPrice.value) {
+                                tdTotalPrice.innerText = (
+                                    parseInt(inputQuantity.value, 10) *
+                                    parseFloat(inputPrice.value)
+                                ).toFixed(2);
+                             } else {
+                                tdTotalPrice.innerText = "";
+                             }
                             if (inputOutgoQuantity.value) {
                                 tdOutgoPrice.innerText = (
                                     parseInt(inputOutgoQuantity.value, 10) *
                                     parseFloat(inputPrice.value)
                                 ).toFixed(2);
+                            } else {
+                                tdOutgoPrice.innerText = "";
                             }
                         };
                     (inputName.type = "text"),
@@ -247,10 +252,10 @@
                         (inputQuantity.value = item.quantity),
                         inputQuantity.addEventListener("input", () => {
                             const val = parseInt(inputQuantity.value, 10);
-                            if (Number.isNaN(val)) {
-                                return;
+                            if (!Number.isNaN(val)) {
+                                item.quantity = val;
                             }
-                            item.quantity = val;
+                            
                             updateRowPrice();
                             updateTotal();
                         }),
@@ -259,21 +264,22 @@
                         (inputPrice.value = item.price),
                         inputPrice.addEventListener("input", () => {
                             const val = parseFloat(inputPrice.value);
-                            if (Number.isNaN(val)) {
-                                return;
+                            if (!Number.isNaN(val)) {
+                                item.price = val;
                             }
-                            item.price = val;
                             updateRowPrice();
                             updateTotal();
+                            updateOutgo();
                         }),
                         (inputOutgoQuantity.type = "number"),
                         (inputOutgoQuantity.value = item.outgoQuantity),
                         inputOutgoQuantity.addEventListener("input", () => {
                             const val = parseInt(inputOutgoQuantity.value, 10);
                             if (Number.isNaN(val)) {
-                                return;
+                                item.outgoQuantity = 0;
+                            } else {
+                                item.outgoQuantity = val;
                             }
-                            item.outgoQuantity = val;
                             updateRowPrice();
                             updateOutgo();
                         }),
@@ -307,16 +313,19 @@
                 };
 
             row$.subscribe((item) => {
-                (items = [...items, item]), renderItemRow(item), updateTotal(), updateOutgo();
+                items = [...items, item];
+                renderItemRow(item);
+                updateTotal();
+                updateOutgo();
             }),
-                remove$.subscribe(() => {
-                    if (items.length) {
-                        const item = items.pop();
-                        updateTotal(),
-                        updateOutgo(),
-                        table.querySelector("tbody tr:last-child").remove();
-                    }
-                });
+            remove$.subscribe(() => {
+                if (items.length) {
+                    const item = items.pop();
+                    updateTotal();
+                    updateOutgo();
+                    table.querySelector("tbody tr:last-child").remove();
+                }
+            });
 
             function getItemsFromLocalStorage() {
                 return JSON.parse(localStorage.getItem("items"));
