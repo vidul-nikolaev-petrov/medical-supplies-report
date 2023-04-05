@@ -27,6 +27,7 @@
                 border: 1px solid black;
                 padding: 0px;
                 text-align: center;
+                min-width: 100px;
             }
 
             th {
@@ -51,12 +52,13 @@
             input[type="number"] {
                 border: 1px solid gray;
                 padding: 5px;
-                font-size: 16px;
+                font-size: medium;
                 border-radius: 5px;
                 box-sizing: border-box;
+                width: 50%;
             }
             input[type="text"] {
-                width: 90%;
+                width: 76%;
             }
 
             p#results {
@@ -94,6 +96,19 @@
                 display: inline-block;
                 width: 44%;
             }
+
+            span.outgo {
+                text-align: center;
+                font-size: small;
+                display: inline-block;
+                width: 40%;
+            }
+
+            .td-sum {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 14px;
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
@@ -103,7 +118,7 @@
             <thead>
                 <tr>
                     <th width="40%">НАИМЕНОВАНИЕ</th>
-                    <th width="20%" colspan="2">
+                    <th width="30%" colspan="2">
                         <div>ОСТАТЪК</div>
                         <div class="th">
                             <span class="th">Количество</span>
@@ -111,7 +126,14 @@
                         </div>
                     </th>
                     <th width="10%">&#8721;</th>
-                    <th width="10%">&#128465;</th>
+                    <th width="18%" colspan="2">
+                        <div>РАЗХОД</div>
+                        <div class="th">
+                            <span class="outgo">Количество</span>
+                            <span class="outgo">&#8721;</span>
+                        </div>
+                    </th>
+                    <th width="2%">&#128465;</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -135,7 +157,7 @@
         ></script>
         <script>
             const { fromEvent } = rxjs;
-            const { map, timeout, delay } = rxjs.operators;
+            const { map } = rxjs.operators;
             let items = [
                     // { name: "Продукт 1", quantity: 10, price: 5.99 },
                     // { name: "Продукт 2", quantity: 5, price: 8.99 },
@@ -179,9 +201,12 @@
                         tdPrice = document.createElement("td"),
                         tdAction = document.createElement("td"),
                         tdTotalPrice = document.createElement("td"),
+                        tdOutgoQuantity = document.createElement("td"),
+                        tdOutgoPrice = document.createElement("td"),
                         inputName = document.createElement("input"),
                         inputQuantity = document.createElement("input"),
                         inputPrice = document.createElement("input"),
+                        inputOutgoQuantity = document.createElement("input"),
                         removeBtn = document.createElement("button"),
                         updateRowPrice = () => {
                             if (!(inputQuantity.value && inputPrice.value))
@@ -220,6 +245,8 @@
                             updateRowPrice();
                             updateTotal();
                         }),
+                        (inputOutgoQuantity.type = "number"),
+                        (inputOutgoQuantity.value = item.outgoQuantity),
                         tdPrice.appendChild(inputPrice),
                         (removeBtn.innerHTML = "&#10060;"),
                         removeBtn.addEventListener("click", () => {
@@ -227,16 +254,23 @@
                             updateTotal();
                             tr.remove();
                         }),
+                        tdOutgoQuantity.appendChild(inputOutgoQuantity),
                         tdAction.appendChild(removeBtn),
                         tr.appendChild(tdName),
                         tr.appendChild(tdQuantity),
                         tr.appendChild(tdPrice),
                         tr.appendChild(tdTotalPrice),
+                        tr.appendChild(tdOutgoQuantity),
+                        tr.appendChild(tdOutgoPrice),
                         tr.appendChild(tdAction),
                         table.querySelector("tbody").appendChild(tr);
+                    // some CSS enhancements:
+                    tdTotalPrice.className = "td-sum";
+                    tdOutgoPrice.className = "td-sum";
                     return {
                         name: inputName,
                         quantity: inputQuantity,
+                        outgoQuantity: inputOutgoQuantity,
                         price: inputPrice,
                     };
                 };
@@ -306,9 +340,10 @@
 
             fromEvent(exportBtn, "click").subscribe(() => exportItemsAsCsv());
 
-            fromEvent(saveBtn, "click").subscribe(() =>
-                saveItemsToLocalStorage()
-            );
+            fromEvent(saveBtn, "click").subscribe(() => {
+                saveItemsToLocalStorage();
+                showToast("Успешен запис в локалното храниличе.");
+            });
 
             fromEvent(importBtn, "click").subscribe(() => {
                 importItemsFromLocalStorage();
