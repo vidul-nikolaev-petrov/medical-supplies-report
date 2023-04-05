@@ -4,6 +4,11 @@
         <meta charset="UTF-8" />
         <title>Лекарствен Отчет</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+        />
         <style>
             body {
                 font-size: medium;
@@ -102,7 +107,7 @@
                         <div>ОСТАТЪК</div>
                         <div class="th">
                             <span class="th">Количество</span>
-                            <span class="th">Сума</span>
+                            <span class="th">Единична цена</span>
                         </div>
                     </th>
                     <th width="10%">&#8721;</th>
@@ -124,9 +129,13 @@
             <button id="export-items">Експорт</button>
             <button id="import-items">Импорт</button>
         </div>
+        <script
+            type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/toastify-js"
+        ></script>
         <script>
             const { fromEvent } = rxjs;
-            const { map } = rxjs.operators;
+            const { map, timeout, delay } = rxjs.operators;
             let items = [
                     // { name: "Продукт 1", quantity: 10, price: 5.99 },
                     // { name: "Продукт 2", quantity: 5, price: 8.99 },
@@ -225,7 +234,11 @@
                         tr.appendChild(tdTotalPrice),
                         tr.appendChild(tdAction),
                         table.querySelector("tbody").appendChild(tr);
-                    return { name: inputName, quantity: inputQuantity, price: inputPrice };
+                    return {
+                        name: inputName,
+                        quantity: inputQuantity,
+                        price: inputPrice,
+                    };
                 };
 
             row$.subscribe((item) => {
@@ -270,17 +283,25 @@
             }
 
             function importItemsFromLocalStorage() {
-                items = localStorage.getItem(localStorageName);
-                items = JSON.parse(items);
+                const _items = localStorage.getItem(localStorageName);
+                if (!_items) return;
+                items = JSON.parse(_items);
                 items.forEach((i) => {
                     const inputs = renderItemRow(i);
                     for (const property in inputs) {
                         console.log(i[property]);
                         inputs[property].value = i[property];
-                        inputs[property].dispatchEvent(new Event('input'));
+                        inputs[property].dispatchEvent(new Event("input"));
                     }
                 });
                 updateTotal();
+            }
+
+            function showToast(str) {
+                Toastify({
+                    text: str,
+                    duration: 2000,
+                }).showToast();
             }
 
             fromEvent(exportBtn, "click").subscribe(() => exportItemsAsCsv());
@@ -289,9 +310,17 @@
                 saveItemsToLocalStorage()
             );
 
-            fromEvent(importBtn, "click").subscribe(() =>
-                importItemsFromLocalStorage()
-            );
+            fromEvent(importBtn, "click").subscribe(() => {
+                importItemsFromLocalStorage();
+                importBtn.style.display = "none";
+                if (items.length > 0) {
+                    showToast("Успешен импорт на локалните данни.");
+                } else {
+                    showToast("Няма намерени локални данни.");
+                }
+            });
+
+            importBtn.click();
         </script>
     </body>
 </html>
