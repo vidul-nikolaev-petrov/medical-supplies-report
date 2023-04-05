@@ -14,12 +14,13 @@
                 font-size: medium;
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
                 background-color: rgb(243, 243, 243);
-                padding: 3%;
+                padding: 1% 8%;
             }
 
             table {
                 border-collapse: collapse;
                 width: 100%;
+                margin: auto;
             }
 
             th,
@@ -142,7 +143,8 @@
             <span id="result-quantity"
                 >Общо количество: <span id="total-quantity"></span
             ></span>
-            &nbsp;&nbsp;&nbsp; Обща цена: <span id="total-price"></span>
+            Общ разход: <span id="total-outgoprice"></span>&nbsp;&nbsp;&nbsp;
+            Общ остатък: <span id="total-price"></span>
         </p>
         <div id="buttons">
             <button id="add-row">Добави</button>
@@ -167,6 +169,7 @@
                 table = document.getElementById("items"),
                 totalQuantityEl = document.getElementById("total-quantity"),
                 totalPriceEl = document.getElementById("total-price"),
+                totalOutgoPriceEl = document.getElementById("total-outgoprice"),
                 addBtn = document.getElementById("add-row"),
                 removeBtn = document.getElementById("remove-row"),
                 saveBtn = document.getElementById("save-items"),
@@ -183,11 +186,23 @@
                                 0
                             )
                             .toFixed(2);
-                    (totalQuantityEl.textContent = totalQuantity),
-                        (totalPriceEl.textContent = totalPrice);
+                    totalQuantityEl.textContent = totalQuantity;
+                    totalPriceEl.textContent = totalPrice;
+                },
+                updateOutgo = () => {
+                    const totalPrice = items
+                            .filter(e => e.outgoQuantity)
+                            .reduce(
+                                (acc, item) =>
+                                    acc + item.outgoQuantity * item.price,
+                                0
+                            )
+                            .toFixed(2);
+                    totalOutgoPriceEl.textContent = totalPrice;
                 };
 
             updateTotal();
+            updateOutgo();
 
             const row$ = fromEvent(addBtn, "click").pipe(
                     map(() => ({ name: "", quantity: "", price: "" }))
@@ -215,6 +230,12 @@
                                 parseInt(inputQuantity.value, 10) *
                                 parseFloat(inputPrice.value)
                             ).toFixed(2);
+                            if (inputOutgoQuantity.value) {
+                                tdOutgoPrice.innerText = (
+                                    parseInt(inputOutgoQuantity.value, 10) *
+                                    parseFloat(inputPrice.value)
+                                ).toFixed(2);
+                            }
                         };
                     (inputName.type = "text"),
                         (inputName.value = item.name),
@@ -247,11 +268,21 @@
                         }),
                         (inputOutgoQuantity.type = "number"),
                         (inputOutgoQuantity.value = item.outgoQuantity),
+                        inputOutgoQuantity.addEventListener("input", () => {
+                            const val = parseInt(inputOutgoQuantity.value, 10);
+                            if (Number.isNaN(val)) {
+                                return;
+                            }
+                            item.outgoQuantity = val;
+                            updateRowPrice();
+                            updateOutgo();
+                        }),
                         tdPrice.appendChild(inputPrice),
                         (removeBtn.innerHTML = "&#10060;"),
                         removeBtn.addEventListener("click", () => {
                             items = items.filter((i) => i !== item);
                             updateTotal();
+                            updateOutgo();
                             tr.remove();
                         }),
                         tdOutgoQuantity.appendChild(inputOutgoQuantity),
@@ -276,13 +307,14 @@
                 };
 
             row$.subscribe((item) => {
-                (items = [...items, item]), renderItemRow(item), updateTotal();
+                (items = [...items, item]), renderItemRow(item), updateTotal(), updateOutgo();
             }),
                 remove$.subscribe(() => {
                     if (items.length) {
                         const item = items.pop();
                         updateTotal(),
-                            table.querySelector("tbody tr:last-child").remove();
+                        updateOutgo(),
+                        table.querySelector("tbody tr:last-child").remove();
                     }
                 });
 
@@ -323,12 +355,12 @@
                 items.forEach((i) => {
                     const inputs = renderItemRow(i);
                     for (const property in inputs) {
-                        console.log(i[property]);
                         inputs[property].value = i[property];
                         inputs[property].dispatchEvent(new Event("input"));
                     }
                 });
                 updateTotal();
+                updateOutgo();
             }
 
             function showToast(str) {
