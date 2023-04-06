@@ -201,8 +201,8 @@
                     totalOutgoPriceEl.textContent = totalPrice;
                 };
 
-            updateTotal();
-            updateOutgo();
+            // updateTotal();
+            // updateOutgo();
 
             const row$ = fromEvent(addBtn, "click").pipe(
                     map(() => ({ name: "", quantity: "", price: "" }))
@@ -224,15 +224,14 @@
                         inputOutgoQuantity = document.createElement("input"),
                         removeBtn = document.createElement("button"),
                         updateRowPrice = () => {
-                            console.log(">>", inputQuantity.value)
                             if (inputQuantity.value && inputPrice.value) {
                                 tdTotalPrice.innerText = (
                                     parseInt(inputQuantity.value, 10) *
                                     parseFloat(inputPrice.value)
                                 ).toFixed(2);
-                             } else {
+                            } else {
                                 tdTotalPrice.innerText = "";
-                             }
+                            }
                             if (inputOutgoQuantity.value) {
                                 tdOutgoPrice.innerText = (
                                     parseInt(inputOutgoQuantity.value, 10) *
@@ -249,20 +248,30 @@
                         }),
                         tdName.appendChild(inputName),
                         (inputQuantity.type = "number"),
+                        (inputQuantity.min = "0"),
+                        (inputQuantity.step = "1"),
                         (inputQuantity.value = item.quantity),
                         inputQuantity.addEventListener("input", () => {
+                            if (!inputQuantity.validity.valid) {
+                                inputQuantity.value = "";
+                            }
                             const val = parseInt(inputQuantity.value, 10);
                             if (!Number.isNaN(val)) {
                                 item.quantity = val;
                             }
-                            
+
                             updateRowPrice();
                             updateTotal();
                         }),
                         tdQuantity.appendChild(inputQuantity),
                         (inputPrice.type = "number"),
+                        (inputPrice.min = "0"),
+                        (inputPrice.step = "0.01"),
                         (inputPrice.value = item.price),
                         inputPrice.addEventListener("input", () => {
+                            if (!inputPrice.validity.valid) {
+                                inputPrice.value = "";
+                            }
                             const val = parseFloat(inputPrice.value);
                             if (!Number.isNaN(val)) {
                                 item.price = val;
@@ -272,8 +281,13 @@
                             updateOutgo();
                         }),
                         (inputOutgoQuantity.type = "number"),
+                        (inputOutgoQuantity.min = "0"),
+                        (inputOutgoQuantity.step = "1"),
                         (inputOutgoQuantity.value = item.outgoQuantity),
                         inputOutgoQuantity.addEventListener("input", () => {
+                            if (!inputOutgoQuantity.validity.valid) {
+                                inputOutgoQuantity.value = "";
+                            }
                             const val = parseInt(inputOutgoQuantity.value, 10);
                             if (Number.isNaN(val)) {
                                 item.outgoQuantity = 0;
@@ -318,14 +332,14 @@
                 updateTotal();
                 updateOutgo();
             }),
-            remove$.subscribe(() => {
-                if (items.length) {
-                    const item = items.pop();
-                    updateTotal();
-                    updateOutgo();
-                    table.querySelector("tbody tr:last-child").remove();
-                }
-            });
+                remove$.subscribe(() => {
+                    if (items.length) {
+                        const item = items.pop();
+                        updateTotal();
+                        updateOutgo();
+                        table.querySelector("tbody tr:last-child").remove();
+                    }
+                });
 
             function getItemsFromLocalStorage() {
                 return JSON.parse(localStorage.getItem("items"));
@@ -383,7 +397,7 @@
 
             fromEvent(saveBtn, "click").subscribe(() => {
                 saveItemsToLocalStorage();
-                showToast("Успешен запис в локалното храниличе.");
+                showToast("Успешен запис в локалното хранилище.");
             });
 
             fromEvent(importBtn, "click").subscribe(() => {
