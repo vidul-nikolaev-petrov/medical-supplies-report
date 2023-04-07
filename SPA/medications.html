@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <title>Лекарствен Отчет</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
         <link
             rel="stylesheet"
             type="text/css"
@@ -383,6 +384,7 @@
                             tr#subheader { background-color: white; }
                             tr:nth-child(even) { background: #F9F9F9; }
                             div.footer { display: block; clear: both; margin: 10%; font-size: 13px; }
+                            div.total-price { text-align: center; }
                             span.left { float: left; }
                             span.right { float: right; }
                         </style>
@@ -429,7 +431,9 @@
                 wadd(`</table>`);
 
                 wadd(`
-                    <div class="footer"
+                    <div class="footer total-price">
+                        ОСТАТЪК: ${totalPrice} / ${numberToWord(totalPrice)} /
+                    </div>
                     <div class="footer">
                         <span class="left">${dateNow()}</span>
                         <span class="right">Мед. фелдшер: {placeholder}</span>
@@ -445,6 +449,13 @@
 
                 function dateNow() {
                     return moment().format('DD.MM.YYYY г.');
+                }
+
+                function numberToWord(number) {
+                    const res = numberToString.convert(number);
+
+                    return `${res.convertedInteger} ${res.integerCurrency} и 
+                            ${res.convertedFractional}  ${res.fractionalCurrency}`;
                 }
 
                 return true;
