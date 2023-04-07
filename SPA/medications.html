@@ -159,15 +159,14 @@
             type="text/javascript"
             src="https://cdn.jsdelivr.net/npm/toastify-js"
         ></script>
+        <script
+            type="text/javascript"
+            src="https://momentjs.com/downloads/moment.js"
+        ></script>
         <script>
             const { fromEvent } = rxjs;
             const { map } = rxjs.operators;
-            let items = [
-                    // { name: "Продукт 1", quantity: 10, price: 5.99 },
-                    // { name: "Продукт 2", quantity: 5, price: 8.99 },
-                    // { name: "Продукт 3", quantity: 15, price: 1.99 },
-                    // { name: "Продукт 4", quantity: 3, price: 10.99 },
-                ],
+            let items = [],
                 table = document.getElementById("table-items"),
                 totalQuantityEl = document.getElementById("total-quantity"),
                 totalPriceEl = document.getElementById("total-price"),
@@ -371,10 +370,18 @@
                         <title>Лекарствен Отчет</title>
                         <style>
                             @page { size: auto;  margin: 0mm; }
+                            body { -webkit-print-color-adjust: exact; }
                             div#title { padding-top: 5%; text-align: center; }
                             div.center { padding-top: 2%; text-align: center; }
-                            table { border-collapse: collapse; width: 60%; margin: auto; }
+                            table { border-collapse: collapse; width: 70%; margin: auto; }
                             th, td { border: 1px solid black; padding: 4px; text-align: center; }
+                            th { background-color: #CDCDCD; }
+                            td.nobr { border-right: 0; }
+                            td.nobl { border-left: 0; }
+                            td.bold { font-weight: bold; }
+                            div.footer { display: block; clear: both; margin: 10%; font-size: 13px; }
+                            span.left { float: left; }
+                            span.right { float: right; }
                         </style>
                     </head>`);
                 wadd(
@@ -384,20 +391,22 @@
                         <div class="center">&nbsp;</div>
                         <table>
                             <tr>
-                                <th>Наименование</th>
+                                <th colspan="2">Наименование</th>
                                 <th>Единична цена</th>
                                 <th colspan="2">Остатък</th>
                             </tr>
                             <tr>
-                                <td></td>
+                                <td class="nobr"></td>
+                                <td class="nobl"></td>
                                 <td></td>
                                 <td>Количество</td>
                                 <td>Сума</td>
                             </tr>`
                 );
-                body.forEach((e) =>
+                body.forEach((e, index) =>
                     wadd(`
                             <tr>
+                                <td>${index + 1}</td>
                                 <td>${e[0]}</td>
                                 <td>${e[1]}</td>
                                 <td>${e[2]}</td>
@@ -407,13 +416,22 @@
                 );
                 wadd(`
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td>Общо</td>
-                                <td>${totalPrice}</td>
+                                <td class="nobr"></td>
+                                <td class="nobr, nobl"></td>
+                                <td class="nobr, nobl"></td>
+                                <td class="nobr, bold">Общо</td>
+                                <td class="bold">${totalPrice}</td>
                             </tr>
                 `);
                 wadd(`</table>`);
+
+                wadd(`
+                    <div class="footer"
+                    <div class="footer">
+                        <span class="left">${dateNow()}</span>
+                        <span class="right">Мед. фелдшер: {placeholder}</span>
+                    </div>
+                `);
                 wadd(`</body></html>`);
 
                 w.document.close(); // necessary for IE >= 10
@@ -421,6 +439,10 @@
 
                 w.print();
                 w.close();
+
+                function dateNow() {
+                    return moment().format('DD.MM.YYYY г.');
+                }
 
                 return true;
             }
