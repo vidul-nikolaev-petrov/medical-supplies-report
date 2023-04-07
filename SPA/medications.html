@@ -379,6 +379,9 @@
                             td.nobr { border-right: 0; }
                             td.nobl { border-left: 0; }
                             td.bold { font-weight: bold; }
+                            tr#footer { background-color: #CCC; }
+                            tr#subheader { background-color: white; }
+                            tr:nth-child(even) { background: #F9F9F9; }
                             div.footer { display: block; clear: both; margin: 10%; font-size: 13px; }
                             span.left { float: left; }
                             span.right { float: right; }
@@ -395,7 +398,7 @@
                                 <th>Единична цена</th>
                                 <th colspan="2">Остатък</th>
                             </tr>
-                            <tr>
+                            <tr id="subheader">
                                 <td class="nobr"></td>
                                 <td class="nobl"></td>
                                 <td></td>
@@ -415,12 +418,12 @@
                 `)
                 );
                 wadd(`
-                            <tr>
+                            <tr id="footer">
                                 <td class="nobr"></td>
-                                <td class="nobr, nobl"></td>
-                                <td class="nobr, nobl"></td>
-                                <td class="nobr, bold">Общо</td>
-                                <td class="bold">${totalPrice}</td>
+                                <td class="nobr nobl"></td>
+                                <td class="nobr nobl"></td>
+                                <td class="nobr nobl bold">Общо:</td>
+                                <td class="nobl bold">${totalPrice}</td>
                             </tr>
                 `);
                 wadd(`</table>`);
