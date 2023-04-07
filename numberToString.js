@@ -586,10 +586,30 @@ numberToString.textValues = {
                 );
             }
 
+            result.integerCurrency = fixPluralFormInteger(result);
+            result.fractionalCurrency = fixPluralFormFloat(result);
             result.convertedInteger = addAndBeforeLast(result.convertedInteger);
             result.convertedFractional = addAndBeforeLast(
                 result.convertedFractional
             );
+            
+            function fixPluralFormInteger(result) {
+              if (result.integer > 1 && result.integer % 10 === 1) {
+                const struct = result.textValues[result.currenyLang];
+                return struct.currency.bgn.currencyNameCases[2];
+              } else {
+                return result.integerCurrency;
+              }
+            }
+
+            function fixPluralFormFloat(result) {
+              if (result.fractional > 1 && result.fractional % 10 === 1) {
+                const struct = result.textValues[result.currenyLang];
+                return struct.currency.bgn.decimalNameCases[2];
+              } else {
+                return result.fractionalCurrency;
+              }
+            }
 
             function addAndBeforeLast(str) {
                 if (str.split(" ").length < 2) return str;
