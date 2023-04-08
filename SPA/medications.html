@@ -141,11 +141,9 @@
             <tbody></tbody>
         </table>
         <p id="results">
-            <span id="result-quantity"
-                >Общо количество: <span id="total-quantity"></span
-            ></span>
-            Общ разход: <span id="total-outgoprice"></span>&nbsp;&nbsp;&nbsp;
-            Общ остатък: <span id="total-price"></span>
+            <span id="result-quantity">Общо количество: <span id="total-quantity"></span></span>
+            Общ разход: <span id="total-outgoprice"></span>&nbsp;&nbsp;&nbsp; Общ остатък:
+            <span id="total-price"></span>
         </p>
         <div id="buttons">
             <button id="add-row">Добави</button>
@@ -156,14 +154,8 @@
             <button id="print-items">Принтирай</button>
         </div>
         <div id="print"></div>
-        <script
-            type="text/javascript"
-            src="https://cdn.jsdelivr.net/npm/toastify-js"
-        ></script>
-        <script
-            type="text/javascript"
-            src="https://momentjs.com/downloads/moment.js"
-        ></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
         <script>
             const { fromEvent } = rxjs;
             const { map } = rxjs.operators;
@@ -179,15 +171,9 @@
                 importBtn = document.getElementById("import-items"),
                 printBtn = document.getElementById("print-items"),
                 updateTotal = () => {
-                    const totalQuantity = items.reduce(
-                            (acc, item) => acc + item.quantity,
-                            0
-                        ),
+                    const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
-                            .reduce(
-                                (acc, item) => acc + item.price * item.quantity,
-                                0
-                            )
+                            .reduce((acc, item) => acc + item.price * item.quantity, 0)
                             .toFixed(2);
                     totalQuantityEl.textContent = totalQuantity;
                     totalPriceEl.textContent = totalPrice;
@@ -195,11 +181,7 @@
                 updateOutgo = () => {
                     const totalPrice = items
                         .filter((e) => e.outgoQuantity)
-                        .reduce(
-                            (acc, item) =>
-                                acc + item.outgoQuantity * item.price,
-                            0
-                        )
+                        .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
                         .toFixed(2);
                     totalOutgoPriceEl.textContent = totalPrice;
                 };
@@ -207,9 +189,7 @@
             // updateTotal();
             // updateOutgo();
 
-            const row$ = fromEvent(addBtn, "click").pipe(
-                    map(() => ({ name: "", quantity: "", price: "" }))
-                ),
+            const row$ = fromEvent(addBtn, "click").pipe(map(() => ({ name: "", quantity: "", price: "" }))),
                 remove$ = fromEvent(removeBtn, "click"),
                 localStorageName = "MRT-items",
                 renderItemRow = (item) => {
@@ -229,16 +209,14 @@
                         updateRowPrice = () => {
                             if (inputQuantity.value && inputPrice.value) {
                                 tdTotalPrice.innerText = (
-                                    parseInt(inputQuantity.value, 10) *
-                                    parseFloat(inputPrice.value)
+                                    parseInt(inputQuantity.value, 10) * parseFloat(inputPrice.value)
                                 ).toFixed(2);
                             } else {
                                 tdTotalPrice.innerText = "";
                             }
                             if (inputOutgoQuantity.value) {
                                 tdOutgoPrice.innerText = (
-                                    parseInt(inputOutgoQuantity.value, 10) *
-                                    parseFloat(inputPrice.value)
+                                    parseInt(inputOutgoQuantity.value, 10) * parseFloat(inputPrice.value)
                                 ).toFixed(2);
                             } else {
                                 tdOutgoPrice.innerText = "";
@@ -348,27 +326,9 @@
                 return JSON.parse(localStorage.getItem("items"));
             }
 
-            function printHTML() {
-                const items = JSON.parse(
-                    localStorage.getItem(localStorageName)
-                );
-                const body = items.map((item) => [
-                    item.name,
-                    item.price,
-                    item.quantity,
-                    (item.quantity * item.price).toFixed(2),
-                ]);
-                const totalPrice = items
-                    .reduce((acc, item) => acc + item.price * item.quantity, 0)
-                    .toFixed(2);
-
-                const w = window.open("", "PRINT");
-
-                wadd = (str) => w.document.write(str);
-
-                wadd(`<html>`);
-                wadd(`<head>
-                        <title>Лекарствен Отчет</title>
+            function printer() {
+                const html = {
+                    css: `
                         <style>
                             @page { size: auto;  margin: 0mm; }
                             body { -webkit-print-color-adjust: exact; }
@@ -387,10 +347,32 @@
                             div.total-price { text-align: center; }
                             span.left { float: left; }
                             span.right { float: right; }
-                        </style>
-                    </head>`);
-                wadd(
-                    `<body>
+                        </style>`,
+                };
+
+                function remainder() {
+                    const w = window.open("", "PRINT");
+                    const wadd = (str) => w.document.write(str);
+                    const items = JSON.parse(localStorage.getItem(localStorageName));
+                    const body = items.map((item) => [
+                        item.name,
+                        item.price,
+                        item.quantity,
+                        (item.quantity * item.price).toFixed(2),
+                    ]);
+                    const totalPrice = items
+                        .reduce((acc, item) => acc + item.price * item.quantity, 0)
+                        .toFixed(2);
+
+                    wadd(`<html>`);
+                    wadd(`
+                        <head>
+                            <title>Лекарствен Отчет</title>
+                            ${html.css}
+                        </head>
+                    `);
+                    wadd(
+                        `<body>
                         <h2><div id="title">СУ {placeholder}</div><h2>
                         <h3><div class="center">ОПИС НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ НА {placeholder}</div><h3>
                         <div class="center">&nbsp;</div>
@@ -407,9 +389,9 @@
                                 <td>Количество</td>
                                 <td>Сума</td>
                             </tr>`
-                );
-                body.forEach((e, index) =>
-                    wadd(`
+                    );
+                    body.forEach((e, index) =>
+                        wadd(`
                             <tr>
                                 <td>${index + 1}</td>
                                 <td>${e[0]}</td>
@@ -418,8 +400,8 @@
                                 <td>${e[3]}</td>
                             </tr>
                 `)
-                );
-                wadd(`
+                    );
+                    wadd(`
                             <tr id="footer">
                                 <td class="nobr"></td>
                                 <td class="nobr nobl"></td>
@@ -428,27 +410,30 @@
                                 <td class="nobl bold">${totalPrice}</td>
                             </tr>
                 `);
-                wadd(`</table>`);
+                    wadd(`</table>`);
 
-                wadd(`
-                    <div class="footer total-price">
-                        ОСТАТЪК: ${totalPrice} / ${numberToWord(totalPrice)} /
-                    </div>
-                    <div class="footer">
-                        <span class="left">${dateNow()}</span>
-                        <span class="right">Мед. фелдшер: {placeholder}</span>
-                    </div>
-                `);
-                wadd(`</body></html>`);
+                    wadd(`
+                        <div class="footer total-price">
+                            ОСТАТЪК: ${totalPrice} / ${numberToWord(totalPrice)} /
+                        </div>
+                        <div class="footer">
+                            <span class="left">${dateNow()}</span>
+                            <span class="right">Мед. фелдшер: {placeholder}</span>
+                        </div>
+                    `);
+                    wadd(`</body></html>`);
 
-                w.document.close(); // necessary for IE >= 10
-                w.focus(); // necessary for IE >= 10*/
+                    w.document.close(); // necessary for IE >= 10
+                    w.focus(); // necessary for IE >= 10*/
 
-                w.print();
-                w.close();
+                    w.print();
+                    w.close();
 
-                function dateNow() {
-                    return moment().format('DD.MM.YYYY г.');
+                    function dateNow() {
+                        return moment().format("DD.MM.YYYY г.");
+                    }
+
+                    return true;
                 }
 
                 function numberToWord(number) {
@@ -458,15 +443,14 @@
                             ${res.convertedFractional}  ${res.fractionalCurrency}`;
                 }
 
-                return true;
+                printer.printRemainder = remainder;
             }
 
+            // Invoke outer function to attach inner function
+            printer();
+
             function exportItemsAsCsv() {
-                const csv = items
-                    .map(
-                        (item) => `${item.name},${item.quantity},${item.price}`
-                    )
-                    .join("\n");
+                const csv = items.map((item) => `${item.name},${item.quantity},${item.price}`).join("\n");
 
                 const blob = new Blob([csv], {
                     type: "text/csv;charset=utf-8;",
@@ -527,7 +511,7 @@
             });
 
             fromEvent(printBtn, "click").subscribe(() => {
-                printHTML();
+                printer.printRemainder();
             });
 
             importBtn.click();
