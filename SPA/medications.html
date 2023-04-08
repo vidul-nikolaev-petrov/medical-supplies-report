@@ -158,7 +158,8 @@
             <button id="save-items">Запази</button>
             <button id="export-items">Експорт</button>
             <button id="import-items">Импорт</button>
-            <button id="print-items">Принтирай</button>
+            <button id="print-items-r">Принт О</button>
+            <button id="print-items-o">Принт Р</button>
         </div>
         <div id="print"></div>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -176,7 +177,8 @@
                 saveBtn = document.getElementById("save-items"),
                 exportBtn = document.getElementById("export-items"),
                 importBtn = document.getElementById("import-items"),
-                printBtn = document.getElementById("print-items"),
+                printBtnR = document.getElementById("print-items-r"),
+                printBtnO = document.getElementById("print-items-o"),
                 updateTotal = () => {
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
@@ -357,7 +359,7 @@
                         </style>`,
                 };
 
-                function remainder() {                    
+                function remainder() {
                     const items = JSON.parse(localStorage.getItem(localStorageName));
                     const body = items.map((item) => [
                         item.name,
@@ -368,20 +370,36 @@
                     const totalPrice = items
                         .reduce((acc, item) => acc + item.price * item.quantity, 0)
                         .toFixed(2);
-                    
+
                     _printer({
-                        htmlTitle: "ОПИС",
-                        htmlFooter: "ОСТАТЪК",
                         body,
                         totalPrice,
-                    })
+                        htmlTitle: "ОПИС",
+                        htmlFooter: "ОСТАТЪК",
+                    });
                 }
 
                 function outgo() {
+                    const items = JSON.parse(localStorage.getItem(localStorageName));
+                    const body = items.map((item) => [
+                        item.name,
+                        item.price,
+                        item.outgoQuantity,
+                        (item.outgoQuantity * item.price).toFixed(2),
+                    ]);
+                    const totalPrice = items
+                        .reduce((acc, item) => acc + item.price * item.outgoQuantity, 0)
+                        .toFixed(2);
 
+                    _printer({
+                        body,
+                        totalPrice,
+                        htmlTitle: "РАЗХОД",
+                        htmlFooter: "РАЗХОД",
+                    });
                 }
 
-                function _printer({htmlTitle, htmlFooter, body, totalPrice}) {
+                function _printer({ htmlTitle, htmlFooter, body, totalPrice }) {
                     const w = window.open("", "PRINT");
                     const wadd = (str) => w.document.write(str);
 
@@ -395,7 +413,7 @@
                     wadd(
                         `<body>
                         <h2><div id="title">СУ {placeholder}</div><h2>
-                        <h3><div class="center">{htmlTitle} НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ НА {placeholder}</div><h3>
+                        <h3><div class="center">${htmlTitle} НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ НА {placeholder}</div><h3>
                         <div class="center">&nbsp;</div>
                         <table>
                             <tr>
@@ -435,7 +453,7 @@
 
                     wadd(`
                         <div class="footer total-price">
-                            {htmlFooter}: ${totalPrice} / ${numberToWord(totalPrice)} /
+                            ${htmlFooter}: ${totalPrice} / ${numberToWord(totalPrice)} /
                         </div>
                         <div class="footer">
                             <span class="left">${dateNow()}</span>
@@ -460,7 +478,7 @@
                 function numberToWord(number) {
                     const res = numberToString.convert(number);
 
-                    return `${res.convertedInteger} ${res.integerCurrency} и 
+                    return `${res.convertedInteger} ${res.integerCurrency} и
                             ${res.convertedFractional}  ${res.fractionalCurrency}`;
                 }
 
@@ -532,8 +550,12 @@
                 }
             });
 
-            fromEvent(printBtn, "click").subscribe(() => {
+            fromEvent(printBtnR, "click").subscribe(() => {
                 printer.printRemainder();
+            });
+
+            fromEvent(printBtnO, "click").subscribe(() => {
+                printer.printOutgo();
             });
 
             importBtn.click();
