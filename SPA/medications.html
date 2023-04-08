@@ -58,9 +58,16 @@
                 border-radius: 5px;
                 box-sizing: border-box;
                 width: 50%;
+                color: #504f4f;
             }
+
             input[type="text"] {
+                color: rgb(73, 73, 73);
                 width: 76%;
+            }
+
+            input[type="text"]:focus {
+                color: #282828;
             }
 
             p#results {
@@ -350,9 +357,7 @@
                         </style>`,
                 };
 
-                function remainder() {
-                    const w = window.open("", "PRINT");
-                    const wadd = (str) => w.document.write(str);
+                function remainder() {                    
                     const items = JSON.parse(localStorage.getItem(localStorageName));
                     const body = items.map((item) => [
                         item.name,
@@ -363,6 +368,22 @@
                     const totalPrice = items
                         .reduce((acc, item) => acc + item.price * item.quantity, 0)
                         .toFixed(2);
+                    
+                    _printer({
+                        htmlTitle: "ОПИС",
+                        htmlFooter: "ОСТАТЪК",
+                        body,
+                        totalPrice,
+                    })
+                }
+
+                function outgo() {
+
+                }
+
+                function _printer({htmlTitle, htmlFooter, body, totalPrice}) {
+                    const w = window.open("", "PRINT");
+                    const wadd = (str) => w.document.write(str);
 
                     wadd(`<html>`);
                     wadd(`
@@ -374,7 +395,7 @@
                     wadd(
                         `<body>
                         <h2><div id="title">СУ {placeholder}</div><h2>
-                        <h3><div class="center">ОПИС НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ НА {placeholder}</div><h3>
+                        <h3><div class="center">{htmlTitle} НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ НА {placeholder}</div><h3>
                         <div class="center">&nbsp;</div>
                         <table>
                             <tr>
@@ -399,7 +420,7 @@
                                 <td>${e[2]}</td>
                                 <td>${e[3]}</td>
                             </tr>
-                `)
+                    `)
                     );
                     wadd(`
                             <tr id="footer">
@@ -409,12 +430,12 @@
                                 <td class="nobr nobl bold">Общо:</td>
                                 <td class="nobl bold">${totalPrice}</td>
                             </tr>
-                `);
+                    `);
                     wadd(`</table>`);
 
                     wadd(`
                         <div class="footer total-price">
-                            ОСТАТЪК: ${totalPrice} / ${numberToWord(totalPrice)} /
+                            {htmlFooter}: ${totalPrice} / ${numberToWord(totalPrice)} /
                         </div>
                         <div class="footer">
                             <span class="left">${dateNow()}</span>
@@ -444,6 +465,7 @@
                 }
 
                 printer.printRemainder = remainder;
+                printer.printOutgo = outgo;
             }
 
             // Invoke outer function to attach inner function
