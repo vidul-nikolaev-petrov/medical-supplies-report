@@ -52,32 +52,21 @@ function numberToString(number, options) {
         }
 
         if (typeof options.language === "string") {
-            defaultOptions.language =
-                options.language === "uk" ? "ua" : options.language;
+            defaultOptions.language = options.language === "uk" ? "ua" : options.language;
         }
 
         if (typeof options.customDecimalNameCasesForEnglish === "boolean") {
-            defaultOptions.customDecimalNameCasesForEnglish =
-                options.customDecimalNameCasesForEnglish;
+            defaultOptions.customDecimalNameCasesForEnglish = options.customDecimalNameCasesForEnglish;
         }
 
         if (typeof options.customCurrencyPrefixForEnglish === "string") {
-            defaultOptions.customCurrencyPrefixForEnglish =
-                options.customCurrencyPrefixForEnglish;
+            defaultOptions.customCurrencyPrefixForEnglish = options.customCurrencyPrefixForEnglish;
         }
     }
 
     if (defaultOptions.customDecimalNameCasesForEnglish) {
-        textValues.en.currency.uah.decimalNameCases = [
-            "kopek",
-            "kopeks",
-            "kopeks",
-        ];
-        textValues.en.currency.rub.decimalNameCases = [
-            "kopek",
-            "kopeks",
-            "kopeks",
-        ];
+        textValues.en.currency.uah.decimalNameCases = ["kopek", "kopeks", "kopeks"];
+        textValues.en.currency.rub.decimalNameCases = ["kopek", "kopeks", "kopeks"];
     }
 
     if (defaultOptions.customCurrencyPrefixForEnglish) {
@@ -100,8 +89,7 @@ function numberToString(number, options) {
     /**
      * Set current currency
      */
-    var currencyValues =
-        textValues[defaultOptions.language].currency[defaultOptions.currency];
+    var currencyValues = textValues[defaultOptions.language].currency[defaultOptions.currency];
 
     /**
      * Make decimal number from the given
@@ -121,9 +109,7 @@ function numberToString(number, options) {
     /**
      * Current number class
      */
-    var currentClassNumber = Math.abs(integerValue)
-        .toString()
-        .substr(0, numbersLastClass);
+    var currentClassNumber = Math.abs(integerValue).toString().substr(0, numbersLastClass);
     /**
      * Number of deleted digits
      */
@@ -179,11 +165,7 @@ function numberToString(number, options) {
     /**
      * For each unit class
      */
-    for (
-        currentUnitClass = classesOfUnits;
-        currentUnitClass > 0;
-        currentUnitClass--
-    ) {
+    for (currentUnitClass = classesOfUnits; currentUnitClass > 0; currentUnitClass--) {
         classTextCase = false;
 
         // For each digit of the class
@@ -226,10 +208,7 @@ function numberToString(number, options) {
 
             // Get currency name
             if (currentUnitClass === 1) {
-                if (
-                    (currentClassNumber.length !== 2 || currentDigit !== 1) &&
-                    currentClassNumber.length < 3
-                ) {
+                if ((currentClassNumber.length !== 2 || currentDigit !== 1) && currentClassNumber.length < 3) {
                     // If the last digit equals 1
                     if (currentDigit === 1) {
                         currencyTextCase = textCasesDictionary.forOne;
@@ -244,11 +223,7 @@ function numberToString(number, options) {
 
             // For digits in range 10-19
             if (currentClassNumber.length === 2 && currentDigit === 1) {
-                result.push(
-                    textValues[defaultOptions.language].tens[
-                        currentClassNumber.substr(1, 1)
-                    ]
-                );
+                result.push(textValues[defaultOptions.language].tens[currentClassNumber.substr(1, 1)]);
                 // Remove digit
                 deletedDigits++;
                 // Move to the next class
@@ -258,55 +233,33 @@ function numberToString(number, options) {
             } else if (currentDigit !== 0) {
                 // If thousands
                 if (currentUnitClass === 2 && currentClassNumber.length === 1) {
-                    result.push(
-                        textValues[defaultOptions.language].numbers[0][
-                            currentDigit
-                        ]
-                    );
+                    result.push(textValues[defaultOptions.language].numbers[0][currentDigit]);
                 } else {
                     // If hundreds or tens
                     if (currentClassNumber.length > 1) {
                         result.push(
-                            textValues[defaultOptions.language].numbers[
-                                currentClassNumber.length
-                            ][currentDigit]
+                            textValues[defaultOptions.language].numbers[currentClassNumber.length][
+                                currentDigit
+                            ]
                         );
 
                         if (!!nextDigit && currentClassNumber.length === 2) {
                             result.push("-");
                         }
                     } else if (currentUnitClass === 1) {
-                        if (
-                            currentDigit === 1 &&
-                            defaultOptions.currency === "uah"
-                        ) {
-                            result.push(
-                                textValues[defaultOptions.language].numbers[0][
-                                    currentDigit
-                                ]
-                            );
-                        } else if (
-                            currentDigit === 2 &&
-                            defaultOptions.currency === "uah"
-                        ) {
-                            result.push(
-                                textValues[defaultOptions.language].numbers[0][
-                                    currentDigit
-                                ]
-                            );
+                        if (currentDigit === 1 && defaultOptions.currency === "uah") {
+                            result.push(textValues[defaultOptions.language].numbers[0][currentDigit]);
+                        } else if (currentDigit === 2 && defaultOptions.currency === "uah") {
+                            result.push(textValues[defaultOptions.language].numbers[0][currentDigit]);
                         } else {
                             result.push(
-                                textValues[defaultOptions.language].numbers[
-                                    currencyValues.currencyValueCase
-                                ][currentDigit]
+                                textValues[defaultOptions.language].numbers[currencyValues.currencyValueCase][
+                                    currentDigit
+                                ]
                             );
                         }
                     } else {
-                        result.push(
-                            textValues[defaultOptions.language].numbers[1][
-                                currentDigit
-                            ]
-                        );
+                        result.push(textValues[defaultOptions.language].numbers[1][currentDigit]);
                     }
                 }
             }
@@ -319,11 +272,7 @@ function numberToString(number, options) {
 
         // If we have class name
         if (classTextCase !== false && currentUnitClass > 1) {
-            result.push(
-                textValues[defaultOptions.language].units[currentUnitClass][
-                    classTextCase
-                ]
-            );
+            result.push(textValues[defaultOptions.language].units[currentUnitClass][classTextCase]);
         }
 
         // Get the number of the next class
@@ -331,48 +280,29 @@ function numberToString(number, options) {
     }
 
     // Edit fractional part
-    for (
-        fractionalIndex = 0;
-        fractionalIndex < fractionalValue.length;
-        fractionalIndex++
-    ) {
+    for (fractionalIndex = 0; fractionalIndex < fractionalValue.length; fractionalIndex++) {
         // Current digit
         currentFractinalDigit = parseInt(fractionalValue[fractionalIndex]);
 
         // If the digit in the range 10-19
         if (parseInt(fractionalValue) > 9 && parseInt(fractionalValue) < 20) {
-            fractionalWords.push(
-                textValues[defaultOptions.language].tens[
-                    fractionalValue.substr(1, 1)
-                ]
-            );
+            fractionalWords.push(textValues[defaultOptions.language].tens[fractionalValue.substr(1, 1)]);
             fractionalIndex = 2;
             // If the digit not in the range 10-19 and doesn't equal 0
         } else if (currentFractinalDigit !== 0) {
             if (fractionalIndex === 0) {
-                fractionalWords.push(
-                    textValues[defaultOptions.language].numbers[2][
-                        currentFractinalDigit
-                    ]
-                );
+                fractionalWords.push(textValues[defaultOptions.language].numbers[2][currentFractinalDigit]);
             } else if (fractionalIndex === 1) {
                 if (defaultOptions.language === "en") {
                     fractionalWords.push("-");
                 }
-                fractionalWords.push(
-                    textValues[defaultOptions.language].numbers[0][
-                        currentFractinalDigit
-                    ]
-                );
+                fractionalWords.push(textValues[defaultOptions.language].numbers[0][currentFractinalDigit]);
             }
 
             if (fractionalIndex === 1) {
                 if (currentFractinalDigit === 1) {
                     fractionalTextCase = 0;
-                } else if (
-                    currentFractinalDigit > 1 &&
-                    currentFractinalDigit < 5
-                ) {
+                } else if (currentFractinalDigit > 1 && currentFractinalDigit < 5) {
                     fractionalTextCase = 1;
                 }
             }
@@ -411,8 +341,7 @@ function numberToString(number, options) {
 
     // Capitalize string
     if (defaultOptions.capitalize) {
-        finalResult =
-            finalResult[0].toLocaleUpperCase() + finalResult.substr(1);
+        finalResult = finalResult[0].toLocaleUpperCase() + finalResult.substr(1);
     }
 
     return {
@@ -427,8 +356,7 @@ function numberToString(number, options) {
         currenyLang: defaultOptions.language,
         // Return calculated shortName for UA and RU languages for USD currency
         shortName:
-            (defaultOptions.language === "ua" ||
-                defaultOptions.language === "ru") &&
+            (defaultOptions.language === "ua" || defaultOptions.language === "ru") &&
             defaultOptions.currency === "usd"
                 ? currencyValues.currencyNameCases[currencyTextCase]
                 : currencyValues.shortName,
@@ -465,30 +393,8 @@ numberToString.textValues = {
     bg: {
         minus: "минус",
         numbers: [
-            [
-                "",
-                "една",
-                "двe",
-                "три",
-                "четири",
-                "пет",
-                "шест",
-                "седем",
-                "осем",
-                "девет",
-            ],
-            [
-                "нула",
-                "един",
-                "двa",
-                "три",
-                "четири",
-                "пет",
-                "шест",
-                "седем",
-                "осем",
-                "девет",
-            ],
+            ["", "една", "двe", "три", "четири", "пет", "шест", "седем", "осем", "девет"],
+            ["нула", "един", "двa", "три", "четири", "пет", "шест", "седем", "осем", "девет"],
             [
                 "",
                 "",
@@ -529,7 +435,7 @@ numberToString.textValues = {
         units: [
             [],
             [],
-            ["хиляда", "хиляда", "хиляди"],
+            ["хилядa", "хиляди", "хиляди"],
             ["милион", "милионa", "милионa"],
             ["милиард", "милиарда", "милиарди"],
             ["трилион", "трилиона", "трилиони"],
@@ -578,75 +484,61 @@ numberToString.textValues = {
             },
         },
         specialCases: function (result) {
-            if (result.integer >= 1000 && result.integer < 2000) {
-                // 1000 -> "хиляда", and not "една хиляда"
-                result.convertedInteger = result.convertedInteger.replace(
-                    /^една /,
-                    ""
-                );
-            }
+            let tens = this.tens.reduce((acc, e) => {
+                return acc.concat(e);
+            }, []);
+            let units = this.units.reduce((acc, e) => {
+                return acc.concat(e);
+            }, []);
+            let numbers = this.numbers.reduce((acc, e) => {
+                return acc.concat(e);
+            }, []);
 
-            result.integerCurrency = fixPluralFormInteger(result);
-            result.fractionalCurrency = fixPluralFormFloat(result);
-            result.convertedInteger = addAndBeforeLast(result.convertedInteger);
-            result.convertedFractional = addAndBeforeLast(
-                result.convertedFractional
-            );
-            
-            function fixPluralFormInteger(result) {
-              if (result.integer > 1 && result.integer % 10 === 1) {
-                const struct = result.textValues[result.currenyLang];
-                return struct.currency.bgn.currencyNameCases[2];
-              } else {
-                return result.integerCurrency;
-              }
-            }
+            tens = tens.reduce((acc, e) => {
+                acc[e] = true;
+                return acc;
+            }, {});
 
-            function fixPluralFormFloat(result) {
-              if (result.fractional > 1 && result.fractional % 10 === 1) {
-                const struct = result.textValues[result.currenyLang];
-                return struct.currency.bgn.decimalNameCases[2];
-              } else {
-                return result.fractionalCurrency;
-              }
-            }
+            units = units.filter((e) => e);
+            units = units.reduce((acc, e) => {
+                acc[e] = true;
+                return acc;
+            }, {});
 
-            function addAndBeforeLast(str) {
-                if (str.split(" ").length < 2) return str;
-                const names = str.split(" ");
-                let lastElelement = names[names.length - 1];
-                lastElelement = `и ${lastElelement}`;
-                return `${names.slice(0, -1).join(" ")} ${lastElelement}`;
-            }
+            numbers = numbers.filter((e) => e);
+            numbers = numbers.reduce((acc, e) => {
+                acc[e] = true;
+                return acc;
+            }, {});
+
+            const tensReg = new RegExp(Object.keys(tens).join("|"));
+            const unitsReg = new RegExp(Object.keys(units).join("|"));
+            const numbersReg = new RegExp(Object.keys(numbers).join("|"));
+            const numsNumsReg = new RegExp(`(${numbersReg.source})\\s+(${numbersReg.source})`, "g");
+            const numsTensReg = new RegExp(`(${numbersReg.source})\\s+(${tensReg.source})`, "g");
+            const tensNumsReg = new RegExp(`(${tensReg.source})\\s+(${numbersReg.source})`, "g");
+            const unitsNumsReg = new RegExp(`(${unitsReg.source})\\s+(${numbersReg.source})`, "g");
+            const removeEdnoReg = new RegExp("(^една |и една |една и |един и )");
+
+            const regexsInteger = [numsNumsReg, numsTensReg, tensNumsReg];
+            const regexsFractions = [numsNumsReg, numsTensReg];
+
+            regexsInteger.forEach((e) => {
+                result.convertedInteger = result.convertedInteger.replace(e, "$1 и $2");
+            });
+
+            regexsFractions.forEach((e) => {
+                result.convertedFractional = result.convertedFractional.replace(e, "$1 и $2");
+            });
+
+            result.convertedInteger = result.convertedInteger.replace(removeEdnoReg, "");
         },
     },
     ua: {
         minus: "мінус",
         numbers: [
-            [
-                "",
-                "одна",
-                "дві",
-                "три",
-                "чотири",
-                "п'ять",
-                "шість",
-                "сім",
-                "вісім",
-                "дев'ять",
-            ],
-            [
-                "нуль",
-                "один",
-                "два",
-                "три",
-                "чотири",
-                "п'ять",
-                "шість",
-                "сім",
-                "вісім",
-                "дев'ять",
-            ],
+            ["", "одна", "дві", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"],
+            ["нуль", "один", "два", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"],
             [
                 "",
                 "",
@@ -732,42 +624,9 @@ numberToString.textValues = {
     en: {
         minus: "minus",
         numbers: [
-            [
-                "",
-                "one",
-                "two",
-                "three",
-                "four",
-                "five",
-                "six",
-                "seven",
-                "eight",
-                "nine",
-            ],
-            [
-                "zero",
-                "one",
-                "two",
-                "three",
-                "four",
-                "five",
-                "six",
-                "seven",
-                "eight",
-                "nine",
-            ],
-            [
-                "",
-                "",
-                "twenty",
-                "thirty",
-                "forty",
-                "fifty",
-                "sixty",
-                "seventy",
-                "eighty",
-                "ninety",
-            ],
+            ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"],
+            ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"],
+            ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"],
             [
                 "",
                 "one hundred",
@@ -841,30 +700,8 @@ numberToString.textValues = {
     ru: {
         minus: "минус",
         numbers: [
-            [
-                "",
-                "одна",
-                "две",
-                "три",
-                "четыре",
-                "пять",
-                "шесть",
-                "семь",
-                "восемь",
-                "девять",
-            ],
-            [
-                "ноль",
-                "один",
-                "два",
-                "три",
-                "четыре",
-                "пять",
-                "шесть",
-                "семь",
-                "восемь",
-                "девять",
-            ],
+            ["", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"],
+            ["ноль", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"],
             [
                 "",
                 "",
@@ -919,11 +756,7 @@ numberToString.textValues = {
                 shortName: "грн.",
             },
             usd: {
-                currencyNameCases: [
-                    "доллар США",
-                    "доллара США",
-                    "долларов США",
-                ],
+                currencyNameCases: ["доллар США", "доллара США", "долларов США"],
                 decimalNameCases: ["цент", "цента", "центов"],
                 currencyValueCase: 1,
                 decimalValueCase: 0,
