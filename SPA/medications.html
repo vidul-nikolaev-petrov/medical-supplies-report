@@ -182,6 +182,7 @@
                 importBtnOuter = document.getElementById("import-items-outer"),
                 printBtnR = document.getElementById("print-items-r"),
                 printBtnO = document.getElementById("print-items-o"),
+                importFile = document.getElementById("importFile"),
                 updateTotal = () => {
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
@@ -566,27 +567,28 @@
             });
 
             fromEvent(importBtnOuter, "click").subscribe(() => {
-                const fileInput = document.getElementById("importFile");
+                importFile.click();
+            });
 
-                fileInput.click();
-
-                const file = fileInput.files[0];
-
-                if (file) {
+            fromEvent(importFile, "change").subscribe(() => {
+                if (importFile.files.length > 0) {
                     const reader = new FileReader();
 
-                    reader.onload = function (e) {
-                        const contents = e.target.result;
-                        const data = JSON.parse(contents);
+                    reader.onload = () => {
+                        const data = JSON.parse(reader.result);
 
                         for (const key in data) {
                             localStorage.setItem(key, data[key]);
                         }
 
-                        showToast("Данните бяха импортирани успешно.");
+                        importItemsFromLocalStorage();
+
+                        location.reload();
+
+                        showToast("Външните данни бяха импортирани успешно.");
                     };
 
-                    reader.readAsText(file);
+                    reader.readAsText(importFile.files[0]);
                 }
             });
 
