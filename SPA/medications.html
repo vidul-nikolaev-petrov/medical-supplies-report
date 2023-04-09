@@ -24,9 +24,23 @@
                 margin: auto;
             }
 
+            table#results {
+                margin-top: 11px;
+                margin-bottom: 11px;
+                font-size: 14px;
+                font-weight: bold;
+                background-color: rgb(212, 208, 200);
+                border-radius: 10px;
+            }
+
+            table#results td {
+                border: none;
+                padding: 5px 0;
+            }
+
             th,
             td {
-                border: 1px solid black;
+                border: 1px solid rgb(154, 153, 153);
                 padding: 0px;
                 text-align: center;
                 min-width: 100px;
@@ -147,11 +161,17 @@
             </thead>
             <tbody></tbody>
         </table>
-        <p id="results">
-            <span id="result-quantity">Общо количество: <span id="total-quantity"></span></span>
-            Общ разход: <span id="total-outgoprice"></span>&nbsp;&nbsp;&nbsp; Общ остатък:
-            <span id="total-price"></span>
-        </p>
+        <table id="results">
+            <tr>
+                <td>
+                    <span id="result-quantity">Общо количество: <span id="total-quantity"></span></span>
+                    Общ остатък: <span id="total-price"></span>
+                </td>
+                <td>
+                    Общ разход: <span id="total-outgoprice"></span>
+                </td>
+            </tr>
+        </table>
         <div id="buttons">
             <button id="add-row">Добави</button>
             <button id="remove-row">Премахни</button>
@@ -578,7 +598,7 @@
                     reader.onload = () => {
                         const data = JSON.parse(reader.result);
 
-                        // remove all elements
+                        // clear the table
                         document.querySelectorAll(".remove-row").forEach(e => e.click());
 
                         for (const key in data) {
