@@ -158,8 +158,10 @@
             <button id="save-items">Запази</button>
             <button id="export-items">Експорт</button>
             <button id="import-items">Импорт</button>
+            <button id="import-items-outer">Импорт</button>
             <button id="print-items-r">Принт О</button>
             <button id="print-items-o">Принт Р</button>
+            <input type="file" id="importFile" style="display: none" accept=".json" />
         </div>
         <div id="print"></div>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -177,6 +179,7 @@
                 saveBtn = document.getElementById("save-items"),
                 exportBtn = document.getElementById("export-items"),
                 importBtn = document.getElementById("import-items"),
+                importBtnOuter = document.getElementById("import-items-outer"),
                 printBtnR = document.getElementById("print-items-r"),
                 printBtnO = document.getElementById("print-items-o"),
                 updateTotal = () => {
@@ -367,9 +370,14 @@
                         item.quantity,
                         (item.quantity * item.price).toFixed(2),
                     ]);
-                    const totalPrice = items
+                    const totalPriceOutgo = items
+                        .reduce((acc, item) => acc + item.price * item.outgoQuantity, 0)
+                        .toFixed(2);
+                    let totalPrice = items
                         .reduce((acc, item) => acc + item.price * item.quantity, 0)
                         .toFixed(2);
+                    
+                    totalPrice =  (totalPrice- totalPriceOutgo).toFixed(2);
 
                     _printer({
                         body,
@@ -547,6 +555,31 @@
                     showToast("Успешен импорт на локалните данни.");
                 } else {
                     showToast("Няма намерени локални данни.");
+                }
+            });
+
+            fromEvent(importBtnOuter, "click").subscribe(() => {
+                const fileInput = document.getElementById("importFile");
+
+                fileInput.click();
+
+                const file = fileInput.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        const contents = e.target.result;
+                        const data = JSON.parse(contents);
+
+                        for (const key in data) {
+                            localStorage.setItem(key, data[key]);
+                        }
+
+                        showToast("Данните бяха импортирани успешно.");
+                    };
+
+                    reader.readAsText(file);
                 }
             });
 
