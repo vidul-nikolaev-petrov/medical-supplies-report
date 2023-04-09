@@ -181,12 +181,16 @@
                     <span id="result-quantity">Общо количество: <span id="total-quantity"></span></span>
                     Общ остатък:
                 </td>
-                <td class="left">
+                <td width="100px">
                     <span id="total-price"></span>
+                </td>
+                <td width="10px">/</td>
+                <td class="" width="100px">
+                    <span id="total-price-remainder"></span>
                 </td>
                 <td class="right">Общ разход:</td>
                 <td class="left">
-                    <span id="total-outgoprice"></span>
+                    <span id="total-price-outgo"></span>
                 </td>
             </tr>
         </table>
@@ -211,7 +215,8 @@
                 table = document.getElementById("table-items"),
                 totalQuantityEl = document.getElementById("total-quantity"),
                 totalPriceEl = document.getElementById("total-price"),
-                totalOutgoPriceEl = document.getElementById("total-outgoprice"),
+                totalPriceRemainderEl = document.getElementById("total-price-remainder"),
+                totalOutgoPriceEl = document.getElementById("total-price-outgo"),
                 addBtn = document.getElementById("add-row"),
                 removeBtn = document.getElementById("remove-row"),
                 saveBtn = document.getElementById("save-items"),
@@ -228,14 +233,23 @@
                             .toFixed(2);
                     totalQuantityEl.textContent = totalQuantity;
                     totalPriceEl.textContent = totalPrice;
+                    totalPriceRemainderEl.textContent = totalPriceRemainder();
                 },
                 updateOutgo = () => {
                     const totalPrice = items
-                        .filter((e) => e.outgoQuantity)
-                        .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
-                        .toFixed(2);
+                            .filter((e) => e.outgoQuantity)
+                            .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
+                            .toFixed(2);
                     totalOutgoPriceEl.textContent = totalPrice;
+                    totalPriceRemainderEl.textContent = totalPriceRemainder();
                 };
+
+            function totalPriceRemainder() {
+                return (
+                    items.reduce((acc, item) => acc + item.price * item.quantity, 0) -
+                    items.reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
+                ).toFixed(2);
+            }
 
             // updateTotal();
             // updateOutgo();
@@ -321,11 +335,13 @@
                                 inputOutgoQuantity.value = "";
                             }
                             const val = parseInt(inputOutgoQuantity.value, 10);
+                            const valRemainder = parseInt(inputQuantity.value, 10);
                             if (Number.isNaN(val)) {
                                 item.outgoQuantity = 0;
                             } else {
                                 item.outgoQuantity = val;
                             }
+                            if (val > valRemainder) showToast("Разходът надвишава наличността!");
                             updateRowPrice();
                             updateOutgo();
                         }),
@@ -584,7 +600,7 @@
             function showToast(str) {
                 Toastify({
                     text: str,
-                    duration: 2000,
+                    duration: 3000,
                 }).showToast();
             }
 
@@ -633,10 +649,12 @@
             });
 
             fromEvent(printBtnR, "click").subscribe(() => {
+                saveBtn.click();
                 printer.printRemainder();
             });
 
             fromEvent(printBtnO, "click").subscribe(() => {
+                saveBtn.click();
                 printer.printOutgo();
             });
 
