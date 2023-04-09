@@ -184,9 +184,7 @@
                 <td class="left">
                     <span id="total-price"></span>
                 </td>
-                <td class="right">
-                    Общ разход:
-                </td>
+                <td class="right">Общ разход:</td>
                 <td class="left">
                     <span id="total-outgoprice"></span>
                 </td>
@@ -409,8 +407,8 @@
                     const body = items.map((item) => [
                         item.name,
                         item.price,
-                        item.quantity,
-                        (item.quantity * item.price).toFixed(2),
+                        item.quantity - item.outgoQuantity,
+                        ((item.quantity - item.outgoQuantity) * item.price).toFixed(2),
                     ]);
                     const totalPriceOutgo = items
                         .reduce((acc, item) => acc + item.price * item.outgoQuantity, 0)
