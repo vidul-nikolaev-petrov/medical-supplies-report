@@ -293,6 +293,7 @@
                         }),
                         tdPrice.appendChild(inputPrice),
                         (removeBtn.innerHTML = "&#10060;"),
+                        (removeBtn.className = "remove-row"),
                         removeBtn.addEventListener("click", () => {
                             items = items.filter((i) => i !== item);
                             updateTotal();
@@ -577,13 +578,14 @@
                     reader.onload = () => {
                         const data = JSON.parse(reader.result);
 
+                        // remove all elements
+                        document.querySelectorAll(".remove-row").forEach(e => e.click());
+
                         for (const key in data) {
                             localStorage.setItem(key, data[key]);
                         }
 
                         importItemsFromLocalStorage();
-
-                        location.reload();
 
                         showToast("Външните данни бяха импортирани успешно.");
                     };
