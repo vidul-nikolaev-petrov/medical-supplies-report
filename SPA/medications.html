@@ -376,8 +376,8 @@
                     let totalPrice = items
                         .reduce((acc, item) => acc + item.price * item.quantity, 0)
                         .toFixed(2);
-                    
-                    totalPrice =  (totalPrice- totalPriceOutgo).toFixed(2);
+
+                    totalPrice = (totalPrice - totalPriceOutgo).toFixed(2);
 
                     _printer({
                         body,
@@ -497,17 +497,24 @@
             // Invoke outer function to attach inner function
             printer();
 
-            function exportItemsAsCsv() {
-                const csv = items.map((item) => `${item.name},${item.quantity},${item.price}`).join("\n");
+            function exportItems() {
+                const regex = new RegExp(`^${localStorageName}`);
+                const datetime = moment().format("DD.MM.YYYY-HH.mm.ss");
+                const exportedData = {};
 
-                const blob = new Blob([csv], {
-                    type: "text/csv;charset=utf-8;",
-                });
-                const url = URL.createObjectURL(blob);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (regex.test(key)) {
+                        exportedData[key] = localStorage.getItem(key);
+                    }
+                }
+
+                const exportedDataJson = JSON.stringify(exportedData, null, 2);
+                const blob = new Blob([exportedDataJson], { type: "application/json" });
                 const link = document.createElement("a");
 
-                link.setAttribute("href", url);
-                link.setAttribute("download", "items.csv");
+                link.href = URL.createObjectURL(blob);
+                link.download = `${localStorageName}-${datetime}.json`;
                 link.style.visibility = "hidden";
 
                 document.body.appendChild(link);
@@ -541,7 +548,7 @@
                 }).showToast();
             }
 
-            fromEvent(exportBtn, "click").subscribe(() => exportItemsAsCsv());
+            fromEvent(exportBtn, "click").subscribe(() => exportItems());
 
             fromEvent(saveBtn, "click").subscribe(() => {
                 saveItemsToLocalStorage();
