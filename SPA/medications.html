@@ -312,10 +312,11 @@
                                 inputQuantity.value = "";
                             }
                             const val = parseInt(inputQuantity.value, 10);
+                            const valOutgo = parseInt(inputOutgoQuantity.value, 10);
                             if (!Number.isNaN(val)) {
                                 item.quantity = val;
                             }
-
+                            if (val < valOutgo) showToast("Наличността е по-малка от разхода!");
                             updateRowPrice();
                             updateTotal();
                         }),
