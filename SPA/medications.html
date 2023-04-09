@@ -23,22 +23,9 @@
 
             table {
                 border-collapse: collapse;
-                width: 85%;
+                width: 90%;
                 margin: auto;
-            }
-
-            table#results {
-                margin-top: 11px;
-                margin-bottom: 11px;
-                font-size: 14px;
-                font-weight: bold;
-                background-color: rgb(212, 208, 200);
-                border-radius: 10px;
-            }
-
-            table#results td {
-                border: none;
-                padding: 5px 0;
+                table-layout: fixed;
             }
 
             th,
@@ -56,6 +43,30 @@
 
             tr:nth-child(even) {
                 background-color: white;
+            }
+
+            table#results {
+                margin-top: 11px;
+                margin-bottom: 11px;
+                font-size: 14px;
+                font-weight: bold;
+                background-color: rgb(212, 208, 200);
+                border-radius: 10px;
+            }
+
+            table#results td {
+                border: none;
+                padding: 5px 0;
+                min-width: 100px;
+            }
+
+            table#results td.left {
+                text-align: left;
+                padding-left: 11px;
+            }
+            table#results td.right {
+                text-align: right;
+                font-weight: lighter;
             }
 
             button {
@@ -152,25 +163,33 @@
                         </div>
                     </th>
                     <th width="10%">&#8721;</th>
-                    <th width="18%" colspan="2">
+                    <th width="20%" colspan="2">
                         <div>РАЗХОД</div>
                         <div class="th">
                             <span class="outgo">Количество</span>
                             <span class="outgo">&#8721;</span>
                         </div>
                     </th>
-                    <th width="2%">&#128465;</th>
+                    <th width=""></th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
         <table id="results">
             <tr>
-                <td>
+                <td class="right">
                     <span id="result-quantity">Общо количество: <span id="total-quantity"></span></span>
-                    Общ остатък: <span id="total-price"></span>
+                    Общ остатък:
                 </td>
-                <td>Общ разход: <span id="total-outgoprice"></span></td>
+                <td class="left">
+                    <span id="total-price"></span>
+                </td>
+                <td class="right">
+                    Общ разход:
+                </td>
+                <td class="left">
+                    <span id="total-outgoprice"></span>
+                </td>
             </tr>
         </table>
         <div id="buttons">
