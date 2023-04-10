@@ -346,7 +346,7 @@
                                 tdOutgoPrice.innerText = "";
                             }
                         };
-                    (inputName.type = "text"),
+                        (inputName.type = "text"),
                         (inputName.value = item.name),
                         inputName.addEventListener("input", () => {
                             item.name = inputName.value;
@@ -437,6 +437,7 @@
                     // some CSS enhancements:
                     tdTotalPrice.className = "td-sum";
                     tdOutgoPrice.className = "td-sum";
+                    if (!inputName.value) inputName.focus();
                     return {
                         name: inputName,
                         quantity: inputQuantity,
