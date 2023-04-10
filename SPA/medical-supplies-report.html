@@ -2,13 +2,14 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <meta name="description" content="Лекарствени Отчети">
-        <meta name="author" content="Видул Николаев Петров">
-        <meta name="keywords" content="Отчет, Приход, Разход, Лекарства">
-        <meta name="version" content="1.0.0">
+        <meta name="description" content="Лекарствени Отчети" />
+        <meta name="author" content="Видул Николаев Петров" />
+        <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
+        <meta name="version" content="1.0.0" />
         <title>Лекарствен Отчет</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.umd.min.js"></script>
         <link
             rel="stylesheet"
             type="text/css"
@@ -20,9 +21,19 @@
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
                 background-color: rgb(243, 243, 243);
                 padding: 1% 8%;
+                margin: 0;
+                height: 100%;
                 opacity: 0;
                 transition: opacity 2s;
                 -webkit-transition: opacity 2s;
+            }
+
+            .logo {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                width: 80px;
+                height: auto;
             }
 
             table {
@@ -51,7 +62,6 @@
 
             tr:focus-within {
                 background-color: rgb(215, 213, 213);
-
             }
 
             table#results {
@@ -156,11 +166,41 @@
                 font-size: 14px;
                 font-weight: bold;
             }
+
+            div#header {
+                width: 100%;
+                margin: 4% 0 4% 0;
+                text-align: center;
+            }
+            div#header div#title {
+                font-weight: bold;
+                font-size: larger;
+            }
+            div#header div#body {
+                font-size: smaller;
+            }
+            div#header #period-range {
+                border: none;
+                border-radius: 0;
+                border-bottom: 1px solid black;
+                width: 20%;
+                background: transparent;
+                text-align: center;
+                font-size: small;
+            }
         </style>
     </head>
     <body onload="document.body.style.opacity='1'">
-        <h1>Лекарствата на Теди</h1>
-        <br />
+        <div id="header">
+            <div id="title">Приходно-разходен отчет за наличност на лекарствата</div>
+            <div id="body">за период <input type="text" id="period-range" /></div>
+        </div>
+        <img
+            src="https://github.com/vidul-nikolaev-petrov/medical-supplies-report/blob/main/img/logo.png?raw=true"
+            alt="Logo"
+            class="logo"
+            id="logo"
+        />
         <table id="table-items">
             <thead>
                 <tr>
@@ -247,9 +287,9 @@
                 },
                 updateOutgo = () => {
                     const totalPrice = items
-                            .filter((e) => e.outgoQuantity)
-                            .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
-                            .toFixed(2);
+                        .filter((e) => e.outgoQuantity)
+                        .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
+                        .toFixed(2);
                     totalOutgoPriceEl.textContent = totalPrice;
                     totalPriceRemainderEl.textContent = totalPriceRemainder();
                 };
@@ -670,6 +710,21 @@
             });
 
             importBtn.click();
+
+            const picker = new easepick.create({
+                element: document.getElementById("period-range"),
+                css: ["https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css"],
+                plugins: ["RangePlugin"],
+                RangePlugin: {
+                    tooltipNumber(num) {
+                        return num - 1;
+                    },
+                    locale: {
+                        one: "ден",
+                        other: "дена",
+                    },
+                },
+            });
         </script>
     </body>
 </html>
