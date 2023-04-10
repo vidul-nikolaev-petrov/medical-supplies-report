@@ -361,7 +361,7 @@
                                 inputQuantity.value = "";
                             }
                             const val = parseInt(inputQuantity.value, 10);
-                            const valOutgo = items.outgoQuantity;
+                            const valOutgo = parseInt(inputOutgoQuantity.value, 10);
                             if (!Number.isNaN(val)) {
                                 item.quantity = val;
                                 inputPrice.disabled = false;
@@ -410,10 +410,10 @@
                                 item.outgoQuantity = 0;
                             } else {
                                 item.outgoQuantity = val;
-                                if (val > valRemainder) showToast("Разходът надвишава наличността!");
-                                updateRowPrice();
-                                updateOutgo();
                             }
+                            if (val > valRemainder) showToast("Разходът надвишава наличността!");
+                            updateRowPrice();
+                            updateOutgo();
                         }),
                         tdPrice.appendChild(inputPrice),
                         (removeBtn.innerHTML = "&#10060;"),
