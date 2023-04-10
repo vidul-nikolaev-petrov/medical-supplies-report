@@ -46,7 +46,8 @@
 
             th,
             td {
-                border: 1px solid rgb(154, 153, 153);
+                /* border: 1px solid rgb(154, 153, 153); */
+                border: none;
                 padding: 0px;
                 text-align: center;
                 min-width: 100px;
@@ -191,8 +192,9 @@
                 font-size: small;
             }
             div#header input#period-range {
-                border-bottom: 1px solid black;
-                width: 15%;
+                /* border-bottom: 1px solid rgb(75, 75, 75); */
+                width: 13%;
+                font-weight: bold;
             }
             div#header input#institution {
                 font-size: medium;
@@ -206,7 +208,7 @@
         <div id="header">
             <div class="header" id="title">Приходно-разходен отчет за наличност на лекарствата</div>
             <div class="header" id="sub-title"><input type="text" id="institution" placeholder="УЧЕБНО ЗАВЕДЕНИЕ" /></div>
-            <div class="header" id="body">за период <input type="text" id="period-range" /></div>
+            <div class="header" id="body">за период <input type="text" id="period-range" placeholder="липват данни" /></div>
         </div>
         <img
             src="https://github.com/vidul-nikolaev-petrov/medical-supplies-report/blob/main/img/logo.png?raw=true"
