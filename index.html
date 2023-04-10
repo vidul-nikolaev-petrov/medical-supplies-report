@@ -30,10 +30,11 @@
 
             .logo {
                 position: absolute;
-                top: 10px;
-                left: 10px;
-                width: 80px;
+                top: 20px;
+                left: 30px;
+                width: 60px;
                 height: auto;
+                opacity: 1;
             }
 
             table {
@@ -179,24 +180,36 @@
             div#header div#body {
                 font-size: smaller;
             }
-            div#header #period-range {
+            div#header div.header {
+                margin-top: 10px;
+            }
+            div#header input {
                 border: none;
                 border-radius: 0;
-                border-bottom: 1px solid black;
-                width: 15%;
                 background: transparent;
                 text-align: center;
                 font-size: small;
+            }
+            div#header input#period-range {
+                border-bottom: 1px solid black;
+                width: 15%;
+            }
+            div#header input#institution {
+                font-size: medium;
+                font-weight: bold;
+                width: 45%;
+                color: black;
             }
         </style>
     </head>
     <body onload="document.body.style.opacity='1'">
         <div id="header">
-            <div id="title">Приходно-разходен отчет за наличност на лекарствата</div>
-            <div id="body">за период <input type="text" id="period-range" /></div>
+            <div class="header" id="title">Приходно-разходен отчет за наличност на лекарствата</div>
+            <div class="header" id="sub-title"><input type="text" id="institution" placeholder="УЧЕБНО ЗАВЕДЕНИЕ" /></div>
+            <div class="header" id="body">за период <input type="text" id="period-range" /></div>
         </div>
         <img
-            src="https://github.com/vidul-nikolaev-petrov/medical-supplies-report/blob/main/img/logo.png?raw=true"
+            src="img/logo.png?raw=true"
             alt="Logo"
             class="logo"
             id="logo"
@@ -260,7 +273,7 @@
         <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
         <script>
             const { fromEvent } = rxjs;
-            const { map } = rxjs.operators;
+            const { map, debounceTime } = rxjs.operators;
             let items = [],
                 settings = {},
                 table = document.getElementById("table-items"),
@@ -277,6 +290,7 @@
                 printBtnR = document.getElementById("print-items-r"),
                 printBtnO = document.getElementById("print-items-o"),
                 importFile = document.getElementById("importFile"),
+                institution = document.getElementById("institution"),
                 peroidRange = document.getElementById("period-range"),
                 updateTotal = () => {
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
@@ -298,6 +312,7 @@
 
             function updateSettings() {
                 peroidRange.value = settings.peroidRange;
+                institution.value = settings.institution || "";
             }
 
             function totalPriceRemainder() {
@@ -729,6 +744,12 @@
                 settings.peroidRange = peroidRange.value;
                 saveToLocalStorage();
                 showToast("Успешен запис на отчетния период в локалното хранилище.")
+            });
+
+            fromEvent(institution, "input").pipe(debounceTime(5000)).subscribe(() => {
+                settings.institution= institution.value;
+                saveToLocalStorage();
+                showToast("Успешен запис на заведението в локалното хранилище.")
             });
 
             importBtn.click();
