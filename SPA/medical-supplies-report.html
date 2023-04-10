@@ -183,7 +183,7 @@
                 border: none;
                 border-radius: 0;
                 border-bottom: 1px solid black;
-                width: 20%;
+                width: 15%;
                 background: transparent;
                 text-align: center;
                 font-size: small;
@@ -262,6 +262,7 @@
             const { fromEvent } = rxjs;
             const { map } = rxjs.operators;
             let items = [],
+                settings = {},
                 table = document.getElementById("table-items"),
                 totalQuantityEl = document.getElementById("total-quantity"),
                 totalPriceEl = document.getElementById("total-price"),
@@ -276,6 +277,7 @@
                 printBtnR = document.getElementById("print-items-r"),
                 printBtnO = document.getElementById("print-items-o"),
                 importFile = document.getElementById("importFile"),
+                peroidRange = document.getElementById("period-range"),
                 updateTotal = () => {
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
@@ -294,10 +296,16 @@
                     totalPriceRemainderEl.textContent = totalPriceRemainder();
                 };
 
+            function updateSettings() {
+                peroidRange.value = settings.peroidRange;
+            }
+
             function totalPriceRemainder() {
                 return (
                     items.reduce((acc, item) => acc + item.price * item.quantity, 0) -
-                    items.reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
+                    items
+                        .filter(e => e.outgoQuantity)
+                        .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
                 ).toFixed(2);
             }
 
@@ -306,7 +314,8 @@
 
             const row$ = fromEvent(addBtn, "click").pipe(map(() => ({ name: "", quantity: "", price: "" }))),
                 remove$ = fromEvent(removeBtn, "click"),
-                localStorageName = "MRT-items",
+                localStoragePrefix = "MSR",
+                localStorageName = `${localStoragePrefix}-current`,
                 renderItemRow = (item) => {
                     const tr = document.createElement("tr"),
                         tdName = document.createElement("td"),
@@ -441,10 +450,6 @@
                     }
                 });
 
-            function getItemsFromLocalStorage() {
-                return JSON.parse(localStorage.getItem("items"));
-            }
-
             function printer() {
                 const html = {
                     css: `
@@ -470,7 +475,6 @@
                 };
 
                 function remainder() {
-                    const items = JSON.parse(localStorage.getItem(localStorageName));
                     const body = items.map((item) => [
                         item.name,
                         item.price,
@@ -495,7 +499,6 @@
                 }
 
                 function outgo() {
-                    const items = JSON.parse(localStorage.getItem(localStorageName));
                     const body = items.map((item) => [
                         item.name,
                         item.price,
@@ -605,7 +608,7 @@
             printer();
 
             function exportItems() {
-                const regex = new RegExp(`^${localStorageName}`);
+                const regex = new RegExp(`^${localStoragePrefix}`);
                 const datetime = moment().format("DD.MM.YYYY-HH.mm.ss");
                 const exportedData = {};
 
@@ -621,7 +624,7 @@
                 const link = document.createElement("a");
 
                 link.href = URL.createObjectURL(blob);
-                link.download = `${localStorageName}-${datetime}.json`;
+                link.download = `${localStoragePrefix}-${datetime}.json`;
                 link.style.visibility = "hidden";
 
                 document.body.appendChild(link);
@@ -629,14 +632,15 @@
                 document.body.removeChild(link);
             }
 
-            function saveItemsToLocalStorage() {
-                localStorage.setItem(localStorageName, JSON.stringify(items));
+            function saveToLocalStorage() {
+                localStorage.setItem(localStorageName, JSON.stringify({ items, settings }));
             }
 
             function importItemsFromLocalStorage() {
-                const _items = localStorage.getItem(localStorageName);
-                if (!_items) return;
-                items = JSON.parse(_items);
+                const storage = JSON.parse(localStorage.getItem(localStorageName));
+                if (!storage) return;
+                items = storage.items;
+                settings = storage.settings;
                 items.forEach((i) => {
                     const inputs = renderItemRow(i);
                     for (const property in inputs) {
@@ -646,6 +650,7 @@
                 });
                 updateTotal();
                 updateOutgo();
+                updateSettings();
             }
 
             function showToast(str) {
@@ -658,7 +663,7 @@
             fromEvent(exportBtn, "click").subscribe(() => exportItems());
 
             fromEvent(saveBtn, "click").subscribe(() => {
-                saveItemsToLocalStorage();
+                saveToLocalStorage();
                 showToast("Успешен запис в локалното хранилище.");
             });
 
@@ -682,7 +687,7 @@
 
                     reader.onload = () => {
                         const data = JSON.parse(reader.result);
-
+                        console.log("data:", data);
                         // clear the table
                         document.querySelectorAll(".remove-row").forEach((e) => e.click());
 
@@ -709,12 +714,18 @@
                 printer.printOutgo();
             });
 
+            fromEvent(peroidRange, "input").subscribe(() => {
+                settings.peroidRange = peroidRange.value;
+                saveToLocalStorage();
+            });
+
             importBtn.click();
 
             const picker = new easepick.create({
-                element: document.getElementById("period-range"),
+                element: peroidRange,
                 css: ["https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css"],
                 plugins: ["RangePlugin"],
+                lang: "bg-BG",
                 RangePlugin: {
                     tooltipNumber(num) {
                         return num - 1;
@@ -723,6 +734,11 @@
                         one: "ден",
                         other: "дена",
                     },
+                },
+                setup(picker) {
+                    picker.on("select", () => {
+                        peroidRange.dispatchEvent(new Event("input"));
+                    });
                 },
             });
         </script>
