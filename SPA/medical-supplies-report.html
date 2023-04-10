@@ -304,7 +304,7 @@
                 return (
                     items.reduce((acc, item) => acc + item.price * item.quantity, 0) -
                     items
-                        .filter(e => e.outgoQuantity)
+                        .filter((e) => e.outgoQuantity)
                         .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
                 ).toFixed(2);
             }
@@ -338,7 +338,7 @@
                             } else {
                                 tdTotalPrice.innerText = "";
                             }
-                            if (inputOutgoQuantity.value) {
+                            if (inputQuantity.value && inputPrice.value && inputOutgoQuantity.value) {
                                 tdOutgoPrice.innerText = (
                                     parseInt(inputOutgoQuantity.value, 10) * parseFloat(inputPrice.value)
                                 ).toFixed(2);
@@ -361,9 +361,13 @@
                                 inputQuantity.value = "";
                             }
                             const val = parseInt(inputQuantity.value, 10);
-                            const valOutgo = parseInt(inputOutgoQuantity.value, 10);
+                            const valOutgo = items.outgoQuantity;
                             if (!Number.isNaN(val)) {
                                 item.quantity = val;
+                                inputPrice.disabled = false;
+                            } else {
+                                item.quantity = "";
+                                inputPrice.disabled = true;
                             }
                             if (val < valOutgo) showToast("Наличността е по-малка от разхода!");
                             updateRowPrice();
@@ -374,6 +378,7 @@
                         (inputPrice.min = "0"),
                         (inputPrice.step = "0.01"),
                         (inputPrice.value = item.price),
+                        (inputPrice.disabled = true),
                         inputPrice.addEventListener("input", () => {
                             if (!inputPrice.validity.valid) {
                                 inputPrice.value = "";
@@ -381,6 +386,10 @@
                             const val = parseFloat(inputPrice.value);
                             if (!Number.isNaN(val)) {
                                 item.price = val;
+                                inputOutgoQuantity.disabled = false;
+                            } else {
+                                item.price = "";
+                                inputOutgoQuantity.disabled = true;
                             }
                             updateRowPrice();
                             updateTotal();
@@ -390,6 +399,7 @@
                         (inputOutgoQuantity.min = "0"),
                         (inputOutgoQuantity.step = "1"),
                         (inputOutgoQuantity.value = item.outgoQuantity),
+                        (inputOutgoQuantity.disabled = true),
                         inputOutgoQuantity.addEventListener("input", () => {
                             if (!inputOutgoQuantity.validity.valid) {
                                 inputOutgoQuantity.value = "";
@@ -400,10 +410,10 @@
                                 item.outgoQuantity = 0;
                             } else {
                                 item.outgoQuantity = val;
+                                if (val > valRemainder) showToast("Разходът надвишава наличността!");
+                                updateRowPrice();
+                                updateOutgo();
                             }
-                            if (val > valRemainder) showToast("Разходът надвишава наличността!");
-                            updateRowPrice();
-                            updateOutgo();
                         }),
                         tdPrice.appendChild(inputPrice),
                         (removeBtn.innerHTML = "&#10060;"),
@@ -687,7 +697,7 @@
 
                     reader.onload = () => {
                         const data = JSON.parse(reader.result);
-                        console.log("data:", data);
+
                         // clear the table
                         document.querySelectorAll(".remove-row").forEach((e) => e.click());
 
@@ -717,6 +727,7 @@
             fromEvent(peroidRange, "input").subscribe(() => {
                 settings.peroidRange = peroidRange.value;
                 saveToLocalStorage();
+                showToast("Успешен запис на отчетния период в локалното хранилище.")
             });
 
             importBtn.click();
