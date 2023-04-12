@@ -15,6 +15,11 @@
             type="text/css"
             href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
         />
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="https://github.com/vidul-nikolaev-petrov/medical-supplies-report/blob/main/img/logo.ico"
+        />
         <style>
             body {
                 font-size: medium;
@@ -207,8 +212,12 @@
     <body onload="document.body.style.opacity='1'">
         <div id="header">
             <div class="header" id="title">Приходно-разходен отчет за наличност на лекарствата</div>
-            <div class="header" id="sub-title"><input type="text" id="institution" placeholder="УЧЕБНО ЗАВЕДЕНИЕ" /></div>
-            <div class="header" id="body">за период <input type="text" id="period-range" placeholder="липват данни" /></div>
+            <div class="header" id="sub-title">
+                <input type="text" id="institution" placeholder="УЧЕБНО ЗАВЕДЕНИЕ" />
+            </div>
+            <div class="header" id="body">
+                за период <input type="text" id="period-range" placeholder="липват данни" />
+            </div>
         </div>
         <img
             src="https://github.com/vidul-nikolaev-petrov/medical-supplies-report/blob/main/img/logo.png?raw=true"
@@ -363,7 +372,7 @@
                                 tdOutgoPrice.innerText = "";
                             }
                         };
-                        (inputName.type = "text"),
+                    (inputName.type = "text"),
                         (inputName.value = item.name),
                         inputName.addEventListener("input", () => {
                             item.name = inputName.value;
@@ -745,14 +754,16 @@
             fromEvent(peroidRange, "input").subscribe(() => {
                 settings.peroidRange = peroidRange.value;
                 saveToLocalStorage();
-                showToast("Успешен запис на отчетния период в локалното хранилище.")
+                showToast("Успешен запис на отчетния период в локалното хранилище.");
             });
 
-            fromEvent(institution, "input").pipe(debounceTime(5000)).subscribe(() => {
-                settings.institution= institution.value;
-                saveToLocalStorage();
-                showToast("Успешен запис на заведението в локалното хранилище.")
-            });
+            fromEvent(institution, "input")
+                .pipe(debounceTime(5000))
+                .subscribe(() => {
+                    settings.institution = institution.value;
+                    saveToLocalStorage();
+                    showToast("Успешен запис на заведението в локалното хранилище.");
+                });
 
             importBtn.click();
 
