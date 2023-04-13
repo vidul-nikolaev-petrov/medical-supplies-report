@@ -10,11 +10,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.umd.min.js"></script>
+        <script src="libs/js/hystmodal.min.js"></script>
         <link
             rel="stylesheet"
             type="text/css"
             href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
         />
+        <link rel="stylesheet" type="text/css" href="libs/css/hystmodal.min.css" />
         <link
             rel="icon"
             type="image/x-icon"
@@ -224,6 +226,7 @@
             alt="Logo"
             class="logo"
             id="logo"
+            data-hystmodal="#m-main"
         />
         <table id="table-items">
             <thead>
@@ -275,6 +278,7 @@
             <button id="export-items">Експорт</button>
             <button id="import-items">Импорт</button>
             <button id="import-items-outer">Импорт</button>
+            <button id="finalize">Финализирай</button>
             <button id="print-items-r">Принт О</button>
             <button id="print-items-o">Принт Р</button>
             <input type="file" id="importFile" style="display: none" accept=".json" />
@@ -298,6 +302,7 @@
                 exportBtn = document.getElementById("export-items"),
                 importBtn = document.getElementById("import-items"),
                 importBtnOuter = document.getElementById("import-items-outer"),
+                finalizeBtn = document.getElementById("finalize"),
                 printBtnR = document.getElementById("print-items-r"),
                 printBtnO = document.getElementById("print-items-o"),
                 importFile = document.getElementById("importFile"),
@@ -741,6 +746,10 @@
                 }
             });
 
+            fromEvent(finalizeBtn, "click").subscribe(() => {
+                showToast("Отчетът беше финализиран успешно.");
+            });
+
             fromEvent(printBtnR, "click").subscribe(() => {
                 saveBtn.click();
                 printer.printRemainder();
@@ -787,6 +796,69 @@
                     });
                 },
             });
+
+            const modal = new HystModal({
+                linkAttributeName: "data-hystmodal",
+                //settings (optional). see API
+            });
         </script>
+        <style>
+            div.hystmodal__window {
+                padding: 0px;
+                width: 300px;
+            }
+            button.hystmodal__close:focus {
+                outline: none !important;
+                outline-offset: none !important;
+                margin: 0px;
+            }
+            div.hystmodal__window span.link {
+                color: rgb(89, 89, 89) !important;
+                padding: 15px 32px;
+                text-decoration: none;
+                font-size: 16px;
+                margin: 4px 2px;
+            }
+            div.hystmodal__window span.link:before {
+                content: "✓";
+            }
+            div.hystmodal__window span.link:hover {
+                cursor: grab;
+            }
+            div.modal-header {
+                text-align: center;
+                color: #dfdfdf;
+                background-color: #3a3939;
+                font-size: large;
+                padding: 5px;
+            }
+            div.modal-body {
+                padding: 4%;
+            }
+        </style>
+        <div class="hystmodal" id="m-main" aria-hidden="true">
+            <div class="hystmodal__wrap">
+                <div class="hystmodal__window" role="dialog" aria-modal="true">
+                    <button data-hystclose class="hystmodal__close">Затовори</button>
+                    <div class="modal-header">Основно меню</div>
+                    <div class="modal-body">
+                        <span class="link" onclick="modal.close(); modal.open('#m-finalize')">
+                            Финализирай отчета
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hystmodal" id="m-finalize" aria-hidden="true">
+            <div class="hystmodal__wrap">
+                <div class="hystmodal__window" role="dialog" aria-modal="true">
+                    <button data-hystclose class="hystmodal__close">Затовори</button>
+                    <div class="modal-header">Финализиране на отчета</div>
+                    <div>
+                        <button style="color: black" onclick="modal.close();">close this modal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
