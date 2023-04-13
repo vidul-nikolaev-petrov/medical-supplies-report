@@ -816,6 +816,11 @@
                 outline-offset: none !important;
                 margin: 0px;
             }
+            div.hystmodal__window div.link {
+                color: rgb(109, 109, 109) !important;
+                margin-left: 4%;
+                padding: 3%;
+            }
             div.hystmodal__window span.link {
                 color: rgb(89, 89, 89) !important;
                 padding: 15px 32px;
@@ -914,9 +919,14 @@
                 <div class="hystmodal__window" role="dialog" aria-modal="true">
                     <button data-hystclose class="hystmodal__close">Затовори</button>
                     <div class="modal-header">Финализиране на отчета</div>
-                    <div>
-                        <button style="color: black" onclick="modal.close();">close this modal</button>
-                    </div>
+                    <p>
+                        <div class="link">
+                            Обяснение кое-как.....
+                        </div>
+                        <span class="link center" onclick="modal.close(); exportBtn.click();">
+                            Финализирай отчета
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>
