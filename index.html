@@ -521,12 +521,14 @@
                 };
 
                 function remainder() {
-                    const body = items.map((item) => [
-                        item.name,
-                        item.price,
-                        item.quantity - item.outgoQuantity,
-                        ((item.quantity - item.outgoQuantity) * item.price).toFixed(2),
-                    ]);
+                    const body = items
+                        .filter((e) => e.quantity > e.outgoQuantity)
+                        .map((item) => [
+                            item.name,
+                            item.price,
+                            item.quantity - item.outgoQuantity,
+                            ((item.quantity - item.outgoQuantity) * item.price).toFixed(2),
+                        ]);
                     const totalPriceOutgo = items
                         .reduce((acc, item) => acc + item.price * item.outgoQuantity, 0)
                         .toFixed(2);
@@ -545,12 +547,14 @@
                 }
 
                 function outgo() {
-                    const body = items.map((item) => [
-                        item.name,
-                        item.price,
-                        item.outgoQuantity,
-                        (item.outgoQuantity * item.price).toFixed(2),
-                    ]);
+                    const body = items
+                        .filter((e) => e.outgoQuantity)
+                        .map((item) => [
+                            item.name,
+                            item.price,
+                            item.outgoQuantity,
+                            (item.outgoQuantity * item.price).toFixed(2),
+                        ]);
                     const totalPrice = items
                         .reduce((acc, item) => acc + item.price * item.outgoQuantity, 0)
                         .toFixed(2);
@@ -988,9 +992,9 @@
                     <div class="modal-header">Относно MSR</div>
                     <div class="modal-body">
                         <div class="link short">• версия: <b>1.0.1</b></div>
+                        <div class="link short">• лиценз: <b>GPLv3</b></div>
                         <div class="link short">• автор: <b>Видул Петров</b></div>
                         <div class="link short">• съавтор: <b>Теодора Монева</b></div>
-                        <div class="link short">• лиценз: <b>GPLv3</b></div>
                     </div>
                 </div>
             </div>
