@@ -5,7 +5,7 @@
         <meta name="description" content="Лекарствени Отчети" />
         <meta name="author" content="Видул Николаев Петров" />
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
-        <meta name="version" content="1.0.0" />
+        <meta name="version" content="1.0.1" />
         <title>Лекарствен Отчет</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
@@ -773,19 +773,19 @@
                 data[itemArchived] = JSON.parse(JSON.stringify(data[itemCurrent]));
                 data[itemCurrent].items = [];
                 data[itemCurrent].settings.peroidRange = "";
-                data[itemArchived].items.forEach(e => {
+                data[itemArchived].items.forEach((e) => {
                     data[itemCurrent].items.push({
                         name: e.name,
                         quantity: e.quantity - e.outgoQuantity,
                         price: e.price,
                         outgoQuantity: 0,
-                    })
+                    });
                 });
 
                 for (let key in data) {
                     localStorage.setItem(key, JSON.stringify(data[key]));
                 }
-                
+
                 clearTableRecords();
                 importItemsFromLocalStorage();
                 showToast("Отчетът беше финализиран успешно.");
@@ -846,17 +846,24 @@
         <style>
             div.hystmodal__window {
                 padding: 0px;
-                width: 500px;
+                width: 33%;
             }
             button.hystmodal__close:focus {
                 outline: none !important;
                 outline-offset: none !important;
                 margin: 0px;
             }
+            div.hystmodal__window div.modal-body {
+                padding: 4%;
+            }
             div.hystmodal__window div.link {
                 color: rgb(109, 109, 109) !important;
                 margin-left: 4%;
                 padding: 3%;
+            }
+            div.hystmodal__window div.short {
+                margin-left: 4%;
+                padding: 1%;
             }
             div.hystmodal__window span.link {
                 color: rgb(89, 89, 89) !important;
@@ -907,6 +914,11 @@
                                 Финализирай отчета
                             </span>
                         </p>
+                        <p>
+                            <span class="link" onclick="modal.close(); modal.open('#m-about')">
+                                Относно програмата
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -917,6 +929,7 @@
                     <button data-hystclose class="hystmodal__close">Затовори</button>
                     <div class="modal-header">Принтиране на отчетите</div>
                     <div class="modal-body">
+                        <div class="link">Обяснение кое-как.....</div>
                         <p>
                             <span class="link" onclick="modal.close(); printBtnR.click();">
                                 Принтирай отчет за остатъка
@@ -937,6 +950,7 @@
                     <button data-hystclose class="hystmodal__close">Затовори</button>
                     <div class="modal-header">Управления на архива</div>
                     <div class="modal-body">
+                        <div class="link">Обяснение кое-как.....</div>
                         <p>
                             <span class="link" onclick="modal.close(); importBtnOuter.click();">
                                 Импортиране на файл с отчетите
@@ -956,14 +970,26 @@
                 <div class="hystmodal__window" role="dialog" aria-modal="true">
                     <button data-hystclose class="hystmodal__close">Затовори</button>
                     <div class="modal-header">Финализиране на отчета</div>
+                    <div class="link">Обяснение кое-как.....</div>
                     <p>
-                        <div class="link">
-                            Обяснение кое-как.....
-                        </div>
                         <span class="link center" onclick="modal.close(); finalizeBtn.click();">
                             Финализирай отчета
                         </span>
                     </p>
+                </div>
+            </div>
+        </div>
+        <div class="hystmodal" id="m-about" aria-hidden="true">
+            <div class="hystmodal__wrap">
+                <div class="hystmodal__window" role="dialog" aria-modal="true">
+                    <button data-hystclose class="hystmodal__close">Затовори</button>
+                    <div class="modal-header">Относно MSR</div>
+                    <div class="modal-body">
+                        <div class="link short">• версия: <b>1.0.1</b></div>
+                        <div class="link short">• автор: <b>Видул Петров</b></div>
+                        <div class="link short">• съавтор: <b>Теодора Монева</b></div>
+                        <div class="link short">• лиценз: <b>GPLv3</b></div>
+                    </div>
                 </div>
             </div>
         </div>
