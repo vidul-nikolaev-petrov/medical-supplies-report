@@ -732,6 +732,7 @@
             });
 
             fromEvent(importBtnOuter, "click").subscribe(() => {
+                importFile.value = null;
                 importFile.click();
             });
 
