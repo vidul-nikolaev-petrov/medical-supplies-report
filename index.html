@@ -10,7 +10,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.umd.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/medical-supplies-report@modals/libs/js/hystmodal.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/medical-supplies-report@main/libs/js/hystmodal.min.js"></script>
         <link
             rel="stylesheet"
             type="text/css"
@@ -19,7 +19,7 @@
         <link
             rel="stylesheet"
             type="text/css"
-            href="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/medical-supplies-report@modals/libs/css/hystmodal.min.css"
+            href="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/medical-supplies-report@main/libs/css/hystmodal.min.css"
         />
         <link
             rel="icon"
@@ -665,7 +665,7 @@
                     }
                 }
 
-                const exportedDataJson = JSON.stringify(exportedData, null, 2);
+                const exportedDataJson = JSON.stringify(exportedData);
                 const blob = new Blob([exportedDataJson], { type: "application/json" });
                 const link = document.createElement("a");
 
@@ -706,6 +706,10 @@
                 }).showToast();
             }
 
+            function clearTableRecords() {
+                document.querySelectorAll(".remove-row").forEach((e) => e.click());
+            }
+
             fromEvent(exportBtn, "click").subscribe(() => exportItems());
 
             fromEvent(saveBtn, "click").subscribe(() => {
@@ -735,7 +739,7 @@
                         const data = JSON.parse(reader.result);
 
                         // clear the table
-                        document.querySelectorAll(".remove-row").forEach((e) => e.click());
+                        clearTableRecords();
 
                         for (const key in data) {
                             localStorage.setItem(key, data[key]);
@@ -751,6 +755,39 @@
             });
 
             fromEvent(finalizeBtn, "click").subscribe(() => {
+                saveToLocalStorage();
+
+                const regex = new RegExp(`^${localStoragePrefix}`);
+                const datetime = moment().format("DD.MM.YYYY-HH.mm.ss");
+                const itemCurrent = `${localStorageName}`;
+                const itemArchived = `${localStoragePrefix}-${datetime}`;
+                const data = {};
+
+                for (let key in localStorage) {
+                    if (regex.test(key)) {
+                        data[key] = JSON.parse(localStorage.getItem(key));
+                        localStorage.removeItem(key);
+                    }
+                }
+
+                data[itemArchived] = JSON.parse(JSON.stringify(data[itemCurrent]));
+                data[itemCurrent].items = [];
+                data[itemCurrent].settings.peroidRange = "";
+                data[itemArchived].items.forEach(e => {
+                    data[itemCurrent].items.push({
+                        name: e.name,
+                        quantity: e.quantity - e.outgoQuantity,
+                        price: e.price,
+                        outgoQuantity: 0,
+                    })
+                });
+
+                for (let key in data) {
+                    localStorage.setItem(key, JSON.stringify(data[key]));
+                }
+                
+                clearTableRecords();
+                importItemsFromLocalStorage();
                 showToast("Отчетът беше финализиран успешно.");
             });
 
@@ -878,7 +915,7 @@
             <div class="hystmodal__wrap">
                 <div class="hystmodal__window" role="dialog" aria-modal="true">
                     <button data-hystclose class="hystmodal__close">Затовори</button>
-                    <div class="modal-header">Принтиране</div>
+                    <div class="modal-header">Принтиране на отчетите</div>
                     <div class="modal-body">
                         <p>
                             <span class="link" onclick="modal.close(); printBtnR.click();">
@@ -923,7 +960,7 @@
                         <div class="link">
                             Обяснение кое-как.....
                         </div>
-                        <span class="link center" onclick="modal.close(); exportBtn.click();">
+                        <span class="link center" onclick="modal.close(); finalizeBtn.click();">
                             Финализирай отчета
                         </span>
                     </p>
