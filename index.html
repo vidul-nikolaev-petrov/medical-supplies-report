@@ -279,12 +279,12 @@
             <button id="add-row">Добави</button>
             <button id="remove-row">Премахни</button>
             <button id="save-items">Запази</button>
-            <button id="export-items">Експорт</button>
             <button id="import-items">Импорт</button>
-            <button id="import-items-outer">Импорт</button>
+            <button id="import-items-outer" style="display: none">Импорт</button>
+            <button id="export-items" style="display: none">Експорт</button>
             <button id="finalize">Финализирай</button>
-            <button id="print-items-r">Принт О</button>
-            <button id="print-items-o">Принт Р</button>
+            <button id="print-items-r" style="display: none">Принт О</button>
+            <button id="print-items-o" style="display: none">Принт Р</button>
             <input type="file" id="importFile" style="display: none" accept=".json" />
         </div>
         <div id="print"></div>
@@ -809,7 +809,7 @@
         <style>
             div.hystmodal__window {
                 padding: 0px;
-                width: 300px;
+                width: 500px;
             }
             button.hystmodal__close:focus {
                 outline: none !important;
@@ -821,11 +821,14 @@
                 padding: 15px 32px;
                 text-decoration: none;
                 font-size: 16px;
-                font-style: italic;
+                font-style: normal;
                 margin: 4px 2px;
             }
-            div.hystmodal__window span.link:before {
+            div.hystmodal__window span.link:hover:before {
                 content: "✓";
+            }
+            div.hystmodal__window span.link:before {
+                content: "•";
             }
             div.hystmodal__window span.link:hover {
                 cursor: grab;
@@ -847,9 +850,61 @@
                     <button data-hystclose class="hystmodal__close">Затовори</button>
                     <div class="modal-header">Основно меню</div>
                     <div class="modal-body">
-                        <span class="link" onclick="modal.close(); modal.open('#m-finalize')">
-                            Финализирай отчета
-                        </span>
+                        <p>
+                            <span class="link" onclick="modal.close(); modal.open('#m-print')">
+                                Принтирай отчета
+                            </span>
+                        </p>
+                        <p>
+                            <span class="link" onclick="modal.close(); modal.open('#m-import-export')">
+                                Импорт и Експорт
+                            </span>
+                        </p>
+                        <p>
+                            <span class="link" onclick="modal.close(); modal.open('#m-finalize')">
+                                Финализирай отчета
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hystmodal" id="m-print" aria-hidden="true">
+            <div class="hystmodal__wrap">
+                <div class="hystmodal__window" role="dialog" aria-modal="true">
+                    <button data-hystclose class="hystmodal__close">Затовори</button>
+                    <div class="modal-header">Принтиране</div>
+                    <div class="modal-body">
+                        <p>
+                            <span class="link" onclick="modal.close(); printBtnR.click();">
+                                Принтирай отчет за остатъка
+                            </span>
+                        </p>
+                        <p>
+                            <span class="link" onclick="modal.close(); printBtnO.click();">
+                                Принтирай отчет за разхода
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hystmodal" id="m-import-export" aria-hidden="true">
+            <div class="hystmodal__wrap">
+                <div class="hystmodal__window" role="dialog" aria-modal="true">
+                    <button data-hystclose class="hystmodal__close">Затовори</button>
+                    <div class="modal-header">Управления на архива</div>
+                    <div class="modal-body">
+                        <p>
+                            <span class="link" onclick="modal.close(); importBtnOuter.click();">
+                                Импортиране на файл с отчетите
+                            </span>
+                        </p>
+                        <p>
+                            <span class="link" onclick="modal.close(); exportBtn.click();">
+                                Експортиране на отчетите във файл
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
