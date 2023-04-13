@@ -777,14 +777,16 @@
                 data[itemArchived] = JSON.parse(JSON.stringify(data[itemCurrent]));
                 data[itemCurrent].items = [];
                 data[itemCurrent].settings.peroidRange = "";
-                data[itemArchived].items.forEach((e) => {
-                    data[itemCurrent].items.push({
-                        name: e.name,
-                        quantity: e.quantity - e.outgoQuantity,
-                        price: e.price,
-                        outgoQuantity: 0,
+                data[itemArchived].items
+                    .filter((e) => e.quantity > e.outgoQuantity)
+                    .forEach((e) => {
+                        data[itemCurrent].items.push({
+                            name: e.name,
+                            quantity: e.quantity - e.outgoQuantity,
+                            price: e.price,
+                            outgoQuantity: 0,
+                        });
                     });
-                });
 
                 for (let key in data) {
                     localStorage.setItem(key, JSON.stringify(data[key]));
