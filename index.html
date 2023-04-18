@@ -5,7 +5,7 @@
         <meta name="description" content="Лекарствени Отчети" />
         <meta name="author" content="Видул Николаев Петров" />
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
-        <meta name="version" content="1.0.1" />
+        <meta name="version" content="1.0.2" />
         <title>Лекарствен Отчет</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
@@ -207,11 +207,12 @@
                 width: 13%;
                 font-weight: bold;
             }
-            div#header input#institution {
-                font-size: medium;
+            div#header input#institution,
+            div#header input#employee {
+                font-size: normal;
                 font-weight: bold;
-                width: 45%;
-                color: black;
+                width: 30%;
+                color: rgb(58, 57, 57);
             }
         </style>
     </head>
@@ -219,7 +220,8 @@
         <div id="header">
             <div class="header" id="title">Приходно-разходен отчет за наличност на лекарствата</div>
             <div class="header" id="sub-title">
-                <input type="text" id="institution" placeholder="УЧЕБНО ЗАВЕДЕНИЕ" />
+                <input type="text" id="employee" placeholder="Длъжност / Имена" />
+                <input type="text" id="institution" placeholder="Учебно заведение" />
             </div>
             <div class="header" id="body">
                 за период <input type="text" id="period-range" placeholder="липват данни" />
@@ -310,6 +312,8 @@
                 printBtnR = document.getElementById("print-items-r"),
                 printBtnO = document.getElementById("print-items-o"),
                 importFile = document.getElementById("importFile"),
+                // settings
+                employee = document.getElementById("employee"),
                 institution = document.getElementById("institution"),
                 peroidRange = document.getElementById("period-range"),
                 updateTotal = () => {
@@ -332,6 +336,7 @@
 
             function updateSettings() {
                 peroidRange.value = settings.peroidRange;
+                employee.value = settings.employee || "";
                 institution.value = settings.institution || "";
             }
 
@@ -540,6 +545,7 @@
 
                     _printer({
                         body,
+                        settings,
                         totalPrice,
                         htmlTitle: "ОПИС",
                         htmlFooter: "ОСТАТЪК",
@@ -561,13 +567,14 @@
 
                     _printer({
                         body,
+                        settings,
                         totalPrice,
                         htmlTitle: "РАЗХОД",
                         htmlFooter: "РАЗХОД",
                     });
                 }
 
-                function _printer({ htmlTitle, htmlFooter, body, totalPrice }) {
+                function _printer({ htmlTitle, htmlFooter, body, settings, totalPrice }) {
                     const w = window.open("", "PRINT");
                     const wadd = (str) => w.document.write(str);
 
@@ -580,8 +587,9 @@
                     `);
                     wadd(
                         `<body>
-                        <h2><div id="title">СУ {placeholder}</div><h2>
-                        <h3><div class="center">${htmlTitle} НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ НА {placeholder}</div><h3>
+                        <h3><div id="title">${settings.institution}</div><h3>
+                        <h3><div class="center">${htmlTitle} НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ</div><h3>
+                        <h5><div class="center">за период:&nbsp;&nbsp;${settings.peroidRange}</div></h5>
                         <div class="center">&nbsp;</div>
                         <table>
                             <tr>
@@ -625,7 +633,7 @@
                         </div>
                         <div class="footer">
                             <span class="left">${dateNow()}</span>
-                            <span class="right">Мед. фелдшер: {placeholder}</span>
+                            <span class="right">${settings.employee || 'Длъжност / Имена'}</span>
                         </div>
                     `);
                     wadd(`</body></html>`);
@@ -822,6 +830,14 @@
                     showToast("Успешен запис на заведението в локалното хранилище.");
                 });
 
+            fromEvent(employee, "input")
+                .pipe(debounceTime(5000))
+                .subscribe(() => {
+                    settings.employee = employee.value;
+                    saveToLocalStorage();
+                    showToast("Успешен запис на служителя в локалното хранилище.");
+                });
+
             importBtn.click();
 
             const picker = new easepick.create({
@@ -849,6 +865,12 @@
                 linkAttributeName: "data-hystmodal",
                 //settings (optional). see API
             });
+
+            function setPageVersion(id) {
+                const v = document.querySelector('meta[name="version"]').getAttribute("content");
+                const el = document.getElementById(id);
+                el.innerText = v;
+            }
         </script>
         <style>
             div.hystmodal__window {
@@ -924,7 +946,10 @@
                             </span>
                         </p>
                         <p>
-                            <span class="link" onclick="modal.close(); modal.open('#m-about')">
+                            <span
+                                class="link"
+                                onclick="modal.close(); modal.open('#m-about'); setPageVersion('about-version');"
+                            >
                                 Относно програмата
                             </span>
                         </p>
@@ -994,7 +1019,7 @@
                     <button data-hystclose class="hystmodal__close">Затовори</button>
                     <div class="modal-header">Относно MSR</div>
                     <div class="modal-body">
-                        <div class="link short">• версия: <b>1.0.1</b></div>
+                        <div class="link short">• версия: <b id="about-version"></b></div>
                         <div class="link short">• лиценз: <b>GPLv3</b></div>
                         <div class="link short">• автор: <b>Видул Петров</b></div>
                         <div class="link short">• съавтор: <b>Теодора Монева</b></div>
