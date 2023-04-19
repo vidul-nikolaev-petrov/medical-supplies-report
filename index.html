@@ -947,6 +947,21 @@
                             return;
                         }
 
+                        if (result === "направи експорт") {
+                            exportBtn.click();
+                            return;
+                        }
+
+                        if (result === "принтирай остатък") {
+                            printBtnR.click();
+                            return;
+                        }
+
+                        if (result === "принтирай разход") {
+                            printBtnO.click();
+                            return;
+                        }
+
                         if (element.type === "text") {
                             result = result.charAt(0).toUpperCase() + result.slice(1);
                         }
