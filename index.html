@@ -412,7 +412,7 @@
                         inputName.addEventListener("focus", (e) => {
                             window.previouslyFocused = e.target;
                         });
-                        tdName.appendChild(inputName),
+                    tdName.appendChild(inputName),
                         (inputQuantity.type = "number"),
                         (inputQuantity.min = "0"),
                         (inputQuantity.step = "1"),
@@ -743,6 +743,14 @@
                 }).showToast();
             }
 
+            function showToastError(str) {
+                Toastify({
+                    text: str,
+                    duration: 2000,
+                    backgroundColor: "red",
+                }).showToast();
+            }
+
             function clearTableRecords() {
                 document.querySelectorAll(".remove-row").forEach((e) => e.click());
             }
@@ -903,13 +911,13 @@
             function speech() {
                 if (!window.webkitSpeechRecognition) {
                     speechImg.style.display = "none";
-                    return
-                };
+                    return;
+                }
 
                 const recognition = new webkitSpeechRecognition();
 
                 recognition.continuous = true;
-                recognition.interimResults = false;
+                recognition.interimResults = true;
                 recognition.lang = "bg-BG";
 
                 let recording = false;
@@ -926,19 +934,23 @@
                     recording = true;
                     recognition.start();
                     recognition.onresult = function (event) {
-                        const element  = document.activeElement;
+                        const element = document.activeElement;
                         const resultsLength = event.results.length - 1;
                         const arrLength = event.results[resultsLength].length - 1;
                         let result = event.results[resultsLength][0].transcript;
 
                         result = result.trim();
 
-                    if (element.type === "text")
-                        result = result.charAt(0).toUpperCase() + result.slice(1);
+                        if (element.type === "text") result = result.charAt(0).toUpperCase() + result.slice(1);
 
                         element.value = result;
                         element.dispatchEvent(new Event("input"));
                     };
+
+                    recognition.onerror = (event) => {
+                        showToastError("Неразпознато число.");
+                    };
+
                     speechImg.style.border = "1px solid red";
                 }
 
