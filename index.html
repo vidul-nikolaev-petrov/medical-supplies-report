@@ -5,7 +5,7 @@
         <meta name="description" content="Лекарствени Отчети" />
         <meta name="author" content="Видул Николаев Петров" />
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
-        <meta name="version" content="1.0.3" />
+        <meta name="version" content="1.0.4" />
         <title>Лекарствен Отчет</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
@@ -926,14 +926,18 @@
                     recording = true;
                     recognition.start();
                     recognition.onresult = function (event) {
+                        const element  = document.activeElement;
                         const resultsLength = event.results.length - 1;
                         const arrLength = event.results[resultsLength].length - 1;
                         let result = event.results[resultsLength][0].transcript;
 
                         result = result.trim();
+
+                    if (element.type === "text")
                         result = result.charAt(0).toUpperCase() + result.slice(1);
-                        document.activeElement.value = result;
-                        document.activeElement.dispatchEvent(new Event("input"));
+
+                        element.value = result;
+                        element.dispatchEvent(new Event("input"));
                     };
                     speechImg.style.border = "1px solid red";
                 }
