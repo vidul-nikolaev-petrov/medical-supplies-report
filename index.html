@@ -941,7 +941,15 @@
 
                         result = result.trim();
 
-                        if (element.type === "text") result = result.charAt(0).toUpperCase() + result.slice(1);
+                        if (result === "край на диктовката") {
+                            element.value = "";
+                            stop();
+                            return;
+                        }
+
+                        if (element.type === "text") {
+                            result = result.charAt(0).toUpperCase() + result.slice(1);
+                        }
 
                         element.value = result;
                         element.dispatchEvent(new Event("input"));
