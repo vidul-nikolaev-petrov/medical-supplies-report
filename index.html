@@ -301,7 +301,7 @@
             <button id="import-items-outer" style="display: none">Импорт</button>
             <button id="export-items" style="display: none">Експорт</button>
             <button id="finalize" style="display: none">Финализирай</button>
-            <button id="print-items-r" style="display: none">Принт О</button>
+            <button id="print-items-r" style="display: block">Принт О</button>
             <button id="print-items-o" style="display: none">Принт Р</button>
             <input type="file" id="importFile" style="display: none" accept=".json" />
         </div>
@@ -324,10 +324,11 @@
                 exportBtn = document.getElementById("export-items"),
                 importBtn = document.getElementById("import-items"),
                 importBtnOuter = document.getElementById("import-items-outer"),
+                importFile = document.getElementById("importFile"),
                 finalizeBtn = document.getElementById("finalize"),
+                // print
                 printBtnR = document.getElementById("print-items-r"),
                 printBtnO = document.getElementById("print-items-o"),
-                importFile = document.getElementById("importFile"),
                 // settings
                 employee = document.getElementById("employee"),
                 institution = document.getElementById("institution"),
@@ -525,10 +526,11 @@
                 });
 
             function printer() {
+                // @media print { footer { page-break-after: always; } }
                 const html = {
                     css: `
                         <style>
-                            @page { size: auto;  margin: 0mm; }
+                            @page { size: auto; margin-top: 8mm; margin-bottom: 10mm; }
                             body { -webkit-print-color-adjust: exact; }
                             div#title { padding-top: 5%; text-align: center; }
                             div.center { padding-top: 2%; text-align: center; }
@@ -604,7 +606,7 @@
                     wadd(`<html>`);
                     wadd(`
                         <head>
-                            <title>Лекарствен Отчет</title>
+                            <title></title>
                             ${html.css}
                         </head>
                     `);
@@ -955,7 +957,7 @@
                         if (commandsReg.test(result)) {
                             commands.counter++;
                             if (commands.counter > 1) {
-                                setTimeout(() => commands.counter = 0, 1000);
+                                setTimeout(() => (commands.counter = 0), 1000);
                                 return;
                             }
                         }
