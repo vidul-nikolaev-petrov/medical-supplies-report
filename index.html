@@ -301,7 +301,7 @@
             <button id="import-items-outer" style="display: none">Импорт</button>
             <button id="export-items" style="display: none">Експорт</button>
             <button id="finalize" style="display: none">Финализирай</button>
-            <button id="print-items-r" style="display: block">Принт О</button>
+            <button id="print-items-r" style="display: none">Принт О</button>
             <button id="print-items-o" style="display: none">Принт Р</button>
             <input type="file" id="importFile" style="display: none" accept=".json" />
         </div>
@@ -526,7 +526,6 @@
                 });
 
             function printer() {
-                // @media print { footer { page-break-after: always; } }
                 const html = {
                     css: `
                         <style>
