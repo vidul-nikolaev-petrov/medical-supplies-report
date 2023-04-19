@@ -931,6 +931,7 @@
                         let result = event.results[resultsLength][0].transcript;
 
                         result = result.trim();
+                        result = result.charAt(0).toUpperCase() + result.slice(1);
                         document.activeElement.value = result;
                         document.activeElement.dispatchEvent(new Event("input"));
                     };
