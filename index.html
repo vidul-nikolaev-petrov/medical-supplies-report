@@ -840,12 +840,12 @@
             });
 
             fromEvent(printBtnR, "click").subscribe(() => {
-                saveBtn.click();
+                saveToLocalStorage();
                 printer.printRemainder();
             });
 
             fromEvent(printBtnO, "click").subscribe(() => {
-                saveBtn.click();
+                saveToLocalStorage();
                 printer.printOutgo();
             });
 
@@ -922,6 +922,17 @@
 
                 let recording = false;
 
+                const commands = {
+                    end: "край на диктовката",
+                    save: "запази промените",
+                    export: "направи експорт",
+                    printR: "принтирай остатък",
+                    printO: "принтирай разход",
+                    counter: 0,
+                };
+
+                const commandsReg = new RegExp(Object.values(commands).filter(isNaN).join("|"));
+
                 function init() {
                     if (recording) {
                         stop();
@@ -941,26 +952,46 @@
 
                         result = result.trim();
 
-                        if (result === "край на диктовката") {
-                            element.value = "";
+                        if (commandsReg.test(result)) {
+                            commands.counter++;
+                            if (commands.counter > 1) {
+                                setTimeout(() => commands.counter = 0, 1000);
+                                return;
+                            }
+                        }
+
+                        console.log(result, commands.counter);
+
+                        if (result === commands.end) {
                             stop();
+                            element.value = "";
                             return;
                         }
 
-                        if (result === "направи експорт") {
+                        if (result === commands.save) {
+                            element.blur();
+                            saveBtn.click();
+                            return;
+                        }
+
+                        if (result === commands.export) {
                             exportBtn.click();
                             return;
                         }
 
-                        if (result === "принтирай остатък") {
+                        if (result === commands.printR) {
+                            command = true;
                             printBtnR.click();
                             return;
                         }
 
-                        if (result === "принтирай разход") {
+                        if (result === commands.printO) {
+                            command = true;
                             printBtnO.click();
                             return;
                         }
+
+                        command = false;
 
                         if (element.type === "text") {
                             result = result.charAt(0).toUpperCase() + result.slice(1);
