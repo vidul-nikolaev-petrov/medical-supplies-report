@@ -48,6 +48,16 @@
                 opacity: 1;
             }
 
+            .speech {
+                position: fixed;
+                bottom: 20px;
+                left: 30px;
+                width: 40px;
+                height: auto;
+                border-radius: 10px;
+                opacity: 1;
+            }
+
             table {
                 border-collapse: collapse;
                 width: 90%;
@@ -234,6 +244,12 @@
             id="logo"
             data-hystmodal="#m-main"
         />
+        <img
+            src="https://www.google.com/intl/en/chrome/assets/common/images/content/mic.gif"
+            alt="Speech"
+            class="speech"
+            id="speech"
+        />
         <table id="table-items">
             <thead>
                 <tr>
@@ -316,6 +332,8 @@
                 employee = document.getElementById("employee"),
                 institution = document.getElementById("institution"),
                 peroidRange = document.getElementById("period-range"),
+                // speech to text
+                speechImg = document.getElementById("speech"),
                 updateTotal = () => {
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
@@ -391,6 +409,9 @@
                         inputName.addEventListener("input", () => {
                             item.name = inputName.value;
                         }),
+                        inputName.addEventListener("focus", (e) => {
+                            window.previouslyFocused = e.target;
+                        });
                         tdName.appendChild(inputName),
                         (inputQuantity.type = "number"),
                         (inputQuantity.min = "0"),
@@ -477,7 +498,9 @@
                     // some CSS enhancements:
                     tdTotalPrice.className = "td-sum";
                     tdOutgoPrice.className = "td-sum";
-                    if (!inputName.value) inputName.focus();
+                    if (!inputName.value) {
+                        inputName.focus();
+                    }
                     return {
                         name: inputName,
                         quantity: inputQuantity,
@@ -633,7 +656,7 @@
                         </div>
                         <div class="footer">
                             <span class="left">${dateNow()}</span>
-                            <span class="right">${settings.employee || 'Длъжност / Имена'}</span>
+                            <span class="right">${settings.employee || "Длъжност / Имена"}</span>
                         </div>
                     `);
                     wadd(`</body></html>`);
@@ -860,6 +883,62 @@
                     });
                 },
             });
+
+            // document.querySelectorAll("input").forEach((e) => {
+            //     e.addEventListener("focus", (e) => {
+            //         window.previouslyFocused = e.target;
+            //     });
+            // });
+
+            fromEvent(speechImg, "click").subscribe(() => {
+                speech.init();
+
+                if (window.previouslyFocused) {
+                    window.previouslyFocused.focus();
+                }
+            });
+
+            function speech() {
+                const recognition = new webkitSpeechRecognition();
+
+                recognition.continuous = true;
+                recognition.interimResults = false;
+                recognition.lang = "bg-BG";
+
+                let recording = false;
+
+                function init() {
+                    if (recording) {
+                        stop();
+                    } else {
+                        start();
+                    }
+                }
+
+                function start() {
+                    recording = true;
+                    recognition.start();
+                    recognition.onresult = function (event) {
+                        const resultsLength = event.results.length - 1;
+                        const arrLength = event.results[resultsLength].length - 1;
+                        let result = event.results[resultsLength][0].transcript;
+
+                        result = result.trim();
+                        window.previouslyFocused.value = result;
+                    };
+                    speechImg.style.border = "1px solid red";
+                }
+
+                function stop() {
+                    recording = false;
+                    recognition.stop();
+                    speechImg.style.border = "0";
+                }
+
+                speech.init = init;
+            }
+
+            speech();
 
             const modal = new HystModal({
                 linkAttributeName: "data-hystmodal",
