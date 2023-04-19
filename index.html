@@ -924,7 +924,8 @@
                         let result = event.results[resultsLength][0].transcript;
 
                         result = result.trim();
-                        window.previouslyFocused.value = result;
+                        document.activeElement.value = result;
+                        document.activeElement.dispatchEvent(new Event("input"));
                     };
                     speechImg.style.border = "1px solid red";
                 }
