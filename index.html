@@ -689,6 +689,8 @@
             printer();
 
             function exportItems() {
+                saveToLocalStorage();
+
                 const regex = new RegExp(`^${localStoragePrefix}`);
                 const datetime = moment().format("DD.MM.YYYY-HH.mm.ss");
                 const exportedData = {};
@@ -899,6 +901,11 @@
             });
 
             function speech() {
+                if (!window.webkitSpeechRecognition) {
+                    speechImg.style.display = "none";
+                    return
+                };
+
                 const recognition = new webkitSpeechRecognition();
 
                 recognition.continuous = true;
