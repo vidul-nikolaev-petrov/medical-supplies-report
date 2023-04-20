@@ -533,7 +533,7 @@
                             body { -webkit-print-color-adjust: exact; }
                             div#title { padding-top: 5%; text-align: center; }
                             div.center { padding-top: 2%; text-align: center; }
-                            table { border-collapse: collapse; width: 72%; margin: auto; }
+                            table { border-collapse: collapse; width: 80%; margin: auto; font-size:16px; }
                             th, td { border: 1px solid black; padding: 4px; text-align: center; }
                             th { background-color: #CDCDCD; }
                             td.nobr { border-right: 0; }
@@ -924,11 +924,11 @@
                 let recording = false;
 
                 const commands = {
-                    end: "край на диктовката",
-                    save: "запази промените",
-                    export: "направи експорт",
-                    printR: "принтирай остатък",
-                    printO: "принтирай разход",
+                    end: "(край на диктовка|спри запис)",
+                    save: "(запази|съхрани) (промяна|промени)",
+                    export: "(направи експорт|запази хранилището)",
+                    printR: "(принтирай|отпечатай) остатък",
+                    printO: "(принтирай|отпечатай) разход",
                     counter: 0,
                 };
 
@@ -961,32 +961,30 @@
                             }
                         }
 
-                        console.log(result, commands.counter);
-
-                        if (result === commands.end) {
+                        if (resultIn(commands.end)) {
                             stop();
                             element.value = "";
                             return;
                         }
 
-                        if (result === commands.save) {
+                        if (resultIn(commands.save)) {
                             element.blur();
                             saveBtn.click();
                             return;
                         }
 
-                        if (result === commands.export) {
+                        if (resultIn(commands.export)) {
                             exportBtn.click();
                             return;
                         }
 
-                        if (result === commands.printR) {
+                        if (resultIn(commands.printR)) {
                             command = true;
                             printBtnR.click();
                             return;
                         }
 
-                        if (result === commands.printO) {
+                        if (resultIn(commands.printO)) {
                             command = true;
                             printBtnO.click();
                             return;
@@ -1000,6 +998,10 @@
 
                         element.value = result;
                         element.dispatchEvent(new Event("input"));
+
+                        function resultIn(command) {
+                            return new RegExp(command).test(result);
+                        }
                     };
 
                     recognition.onerror = (event) => {
@@ -1016,6 +1018,7 @@
                 }
 
                 speech.init = init;
+                speech.commands = commands;
             }
 
             speech();
@@ -1182,6 +1185,24 @@
                         <div class="link short">• лиценз: <b>GPLv3</b></div>
                         <div class="link short">• автор: <b>Видул Петров</b></div>
                         <div class="link short">• съавтор: <b>Теодора Монева</b></div>
+                        <div class="link short">
+                            • гласови команди:
+                            <ul id="voice-commands">
+                                <script>
+                                    const ul = document.getElementById("voice-commands");
+                                    ul.style.margin = "5px";
+                                    Object.values(speech.commands)
+                                        .filter(isNaN)
+                                        .forEach((e) => {
+                                            const li = document.createElement("li");
+                                            li.textContent = e;
+                                            li.style.fontStyle = "italic";
+                                            li.style.fontSize = "small";
+                                            ul.appendChild(li);
+                                        });
+                                </script>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
