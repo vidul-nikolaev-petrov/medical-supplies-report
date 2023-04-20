@@ -269,6 +269,9 @@
             #scroll-up {
                 bottom: 110px;
             }
+            #table-sort-down #table-sort-up {
+                display: inline;
+            }
         </style>
     </head>
     <body onload="document.body.style.opacity='1'">
@@ -300,7 +303,11 @@
         <table id="table-items">
             <thead>
                 <tr>
-                    <th width="40%">НАИМЕНОВАНИЕ</th>
+                    <th width="40%" id="table-sort">
+                        <span id="table-sort-up">&#8593;</span>
+                        <span id="table-sort-down">&#8595;</span>
+                        НАИМЕНОВАНИЕ
+                    </th>
                     <th width="30%" colspan="2">
                         <div>ОСТАТЪК</div>
                         <div class="th">
@@ -361,6 +368,7 @@
             let items = [],
                 settings = {},
                 table = document.getElementById("table-items"),
+                tableSort = document.getElementById("table-sort"),
                 totalQuantityEl = document.getElementById("total-quantity"),
                 totalPriceEl = document.getElementById("total-price"),
                 totalPriceRemainderEl = document.getElementById("total-price-remainder"),
@@ -562,15 +570,16 @@
                 renderItemRow(item);
                 updateTotal();
                 updateOutgo();
-            }),
-                remove$.subscribe(() => {
-                    if (items.length) {
-                        const item = items.pop();
-                        updateTotal();
-                        updateOutgo();
-                        table.querySelector("tbody tr:last-child").remove();
-                    }
-                });
+            });
+
+            remove$.subscribe(() => {
+                if (items.length) {
+                    const item = items.pop();
+                    updateTotal();
+                    updateOutgo();
+                    table.querySelector("tbody tr:last-child").remove();
+                }
+            });
 
             function printer() {
                 const html = {
@@ -802,6 +811,53 @@
             function clearTableRecords() {
                 document.querySelectorAll(".remove-row").forEach((e) => e.click());
             }
+
+            fromEvent(tableSort, "click").subscribe((e) => {
+                let tmp = JSON.parse(JSON.stringify(items));
+                const sortUp = document.getElementById("table-sort-up");
+                const sortDown = document.getElementById("table-sort-down");
+                const displayValDown = getDisplayVal(sortDown);
+                const displayValUp = getDisplayVal(sortUp);
+
+                if (displayValDown === displayValUp) {
+                    sort({ down: true });
+                    sortUp.style.display = "none";
+                } else if (displayValUp === "none") {
+                    sort({ up: true });
+                    sortUp.style.display = "inline";
+                    sortDown.style.display = "none";
+                } else if (displayValDown === "none") {
+                    sort({ down: true });
+                    sortDown.style.display = "inline";
+                    sortUp.style.display = "none";
+                }
+
+                clearTableRecords();
+
+                items = tmp;
+                items.forEach((e) => {
+                    const inputs = renderItemRow(e);
+                    for (const property in inputs) {
+                        inputs[property].value = e[property];
+                        inputs[property].dispatchEvent(new Event("input"));
+                    }
+                });
+
+                updateTotal();
+                updateOutgo();
+
+                function sort({ down, up }) {
+                    if (up) {
+                        tmp.sort((a, b) => b.name.localeCompare(a.name));
+                    } else {
+                        tmp.sort((a, b) => a.name.localeCompare(b.name));
+                    }
+                }
+
+                function getDisplayVal(el) {
+                    return window.getComputedStyle(el).getPropertyValue("display");
+                }
+            });
 
             fromEvent(exportBtn, "click").subscribe(() => exportItems());
 
@@ -1110,14 +1166,10 @@
 
                 if (scrollPosition > windowHeight) {
                     scrollUpButton.style.display = "block";
-                } else {
-                    scrollUpButton.style.display = "none";
                 }
 
                 if (distanceToBottom > windowHeight) {
                     scrollDownButton.style.display = "block";
-                } else {
-                    scrollDownButton.style.display = "none";
                 }
 
                 window.addEventListener("scroll", () => {
