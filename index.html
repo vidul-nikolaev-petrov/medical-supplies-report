@@ -7,25 +7,14 @@
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
         <meta name="version" content="1.0.5" />
         <title>Лекарствен Отчет</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.umd.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/medical-supplies-report@main/libs/js/hystmodal.min.js"></script>
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
-        />
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/medical-supplies-report@main/libs/css/hystmodal.min.css"
-        />
-        <link
-            rel="icon"
-            type="image/x-icon"
-            href="https://raw.githubusercontent.com/vidul-nikolaev-petrov/medical-supplies-report/main/img/logo.ico"
-        />
+        <script src="libs/js/rxjs.umd.min.js"></script>
+        <script src="libs/js/numberToString.js"></script>
+        <script src="libs/js/easepick.min.js"></script>
+        <script src="libs/js/hystmodal.min.js"></script>
+        <script src="libs/js/words2numbers.js"></script>
+        <link rel="stylesheet" type="text/css" href="libs/css/toastify.min.css" />
+        <link rel="stylesheet" type="text/css" href="libs/css/hystmodal.min.css" />
+        <link rel="icon" type="image/x-icon" href="img/logo.ico" />
         <style>
             body {
                 font-size: medium;
@@ -61,7 +50,7 @@
 
             table {
                 border-collapse: collapse;
-                width: 90%;
+                width: 80%;
                 margin: auto;
                 table-layout: fixed;
             }
@@ -195,7 +184,7 @@
                 text-align: center;
                 font-size: small;
                 display: inline-block;
-                width: 48%;
+                width: 45%;
             }
 
             span.outgo {
@@ -294,19 +283,8 @@
                 за период <input type="text" id="period-range" placeholder="липват данни" />
             </div>
         </div>
-        <img
-            src="https://raw.githubusercontent.com/vidul-nikolaev-petrov/medical-supplies-report/main/img/logo.png"
-            alt="Logo"
-            class="logo"
-            id="logo"
-            data-hystmodal="#m-main"
-        />
-        <img
-            src="https://raw.githubusercontent.com/vidul-nikolaev-petrov/medical-supplies-report/main/img/mic.gif"
-            alt="Speech"
-            class="speech"
-            id="speech"
-        />
+        <img src="img/logo.png" alt="Logo" class="logo" id="logo" data-hystmodal="#m-main" />
+        <img src="img/mic.gif" alt="Speech" class="speech" id="speech" />
         <table id="table-items">
             <thead>
                 <tr>
@@ -542,7 +520,8 @@
                         updateRowPrice();
                         updateOutgo();
                     });
-                    tdPrice.appendChild(inputPrice), (removeBtn.innerHTML = "&#10060;");
+                    tdPrice.appendChild(inputPrice);
+                    removeBtn.innerHTML = "&#10060;";
                     removeBtn.className = "remove-row";
                     removeBtn.addEventListener("click", () => {
                         items = items.filter((i) => i !== item);
@@ -1026,7 +1005,7 @@
             });
 
             function speech() {
-                if (!window.webkitSpeechRecognition) {
+                if (!("webkitSpeechRecognition" in window)) {
                     speechImg.style.display = "none";
                     return;
                 }
@@ -1042,6 +1021,7 @@
                 const commands = {
                     addR: "добави (запис|ред)",
                     remR: "(изтрий|премахни) (запис|ред)",
+                    remRN: "(изтрий|премахни) (номер )?(?!номер)\\S+",
                     save: "(запази|съхрани) (промяна|промени)",
                     export: "(направи експорт|запази хранилище)",
                     printR: "(принтирай|отпечатай) остатък",
@@ -1095,6 +1075,11 @@
                             return;
                         }
 
+                        if (resultIn(commands.remRN)) {
+                            removeRowN(result);
+                            return;
+                        }
+
                         if (resultIn(commands.save)) {
                             element.blur();
                             saveBtn.click();
@@ -1129,6 +1114,22 @@
 
                         function resultIn(command) {
                             return new RegExp(command).test(result);
+                        }
+
+                        function removeRowN(result) {
+                            if (!new RegExp(/\s+\d+$/).test(result)) {
+                                result = words2numbers(result);
+                            } else {
+                                result = result.split(" ").at(-1);
+                            }
+
+                            if (!result) return;
+
+                            table
+                                .querySelector("tbody")
+                                .querySelector(`tr:nth-of-type(${result})`)
+                                .querySelector("button")
+                                .click();
                         }
                     };
 
@@ -1376,7 +1377,7 @@
                         <div class="link short">• автор: <b>Видул Петров</b></div>
                         <div class="link short">• съавтор: <b>Теодора Монева</b></div>
                         <div class="link short">
-                            • гласови команди:
+                            • гласови команди (<i>Ctrl+L</i>):
                             <ul id="voice-commands">
                                 <script>
                                     const ul = document.getElementById("voice-commands");
