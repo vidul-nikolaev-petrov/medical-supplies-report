@@ -244,9 +244,35 @@
                 -webkit-appearance: none;
                 margin: 0;
             }
+            span.scroll {
+                position: fixed;
+                left: 33px;
+                transform: translate(0, -50%);
+                width: 20px;
+                text-align: center;
+                height: auto;
+                border-radius: 8px;
+                opacity: 0.84;
+                padding: 4px 8px 6px 8px;
+                font-size: 24px;
+                opacity: 0.3;
+                display: none;
+                border: 1px solid rgb(223, 222, 222);
+            }
+            span.scroll:hover {
+                border: 1px solid rgb(175, 175, 175);
+            }
+            #scroll-down {
+                bottom: 60px;
+            }
+            #scroll-up {
+                bottom: 110px;
+            }
         </style>
     </head>
     <body onload="document.body.style.opacity='1'">
+        <span id="scroll-down" class="scroll">&#8650;</span>
+        <span id="scroll-up" class="scroll">&#8648;</span>
         <div id="header">
             <div class="header" id="title">Приходно-разходен отчет за наличност на лекарствата</div>
             <div class="header" id="sub-title">
@@ -1071,6 +1097,63 @@
                 const el = document.getElementById(id);
                 el.innerText = v;
             }
+
+            // scroll navi
+            (function () {
+                const scrollUpButton = document.getElementById("scroll-up");
+                const scrollDownButton = document.getElementById("scroll-down");
+                const scrollPosition = window.pageYOffset;
+                const windowHeight = window.innerHeight;
+                const fullHeight = document.body.scrollHeight;
+                const distanceToBottom = fullHeight - windowHeight - scrollPosition;
+
+                if (scrollPosition > windowHeight) {
+                    scrollUpButton.style.display = "block";
+                } else {
+                    scrollUpButton.style.display = "none";
+                }
+
+                if (distanceToBottom > windowHeight) {
+                    scrollDownButton.style.display = "block";
+                } else {
+                    scrollDownButton.style.display = "none";
+                }
+
+                window.addEventListener("scroll", () => {
+                    const scrollPosition = window.pageYOffset;
+                    const windowHeight = window.innerHeight;
+                    const fullHeight = document.body.scrollHeight;
+                    const distanceToBottom = fullHeight - windowHeight - scrollPosition;
+
+                    // Show or hide scroll up button
+                    if (scrollPosition > windowHeight) {
+                        scrollUpButton.style.display = "block";
+                    } else {
+                        scrollUpButton.style.display = "none";
+                    }
+
+                    // Show or hide scroll down button
+                    if (distanceToBottom > windowHeight) {
+                        scrollDownButton.style.display = "block";
+                    } else {
+                        scrollDownButton.style.display = "none";
+                    }
+                });
+
+                scrollUpButton.addEventListener("click", () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth",
+                    });
+                });
+
+                scrollDownButton.addEventListener("click", () => {
+                    window.scrollTo({
+                        top: document.body.scrollHeight,
+                        behavior: "smooth",
+                    });
+                });
+            })();
         </script>
         <style>
             div.hystmodal__window {
