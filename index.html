@@ -5,7 +5,7 @@
         <meta name="description" content="Лекарствени Отчети" />
         <meta name="author" content="Видул Николаев Петров" />
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
-        <meta name="version" content="1.0.4" />
+        <meta name="version" content="1.0.5" />
         <title>Лекарствен Отчет</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/vidul-nikolaev-petrov/number-to-cyrillic@master/lib/numberToString.js"></script>
@@ -160,7 +160,7 @@
             }
 
             div#buttons {
-                text-align: center; 
+                text-align: center;
                 /* position: fixed;
                 top: 50%;
                 left: -5px;
@@ -1051,6 +1051,13 @@
                 speech.init = init;
                 speech.commands = commands;
             }
+
+            document.addEventListener("keydown", function (event) {
+                if (event.ctrlKey && event.keyCode === 76) {
+                    event.preventDefault();
+                    speechImg.click();
+                }
+            });
 
             speech();
 
