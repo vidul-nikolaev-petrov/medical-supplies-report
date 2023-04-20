@@ -160,14 +160,28 @@
             }
 
             div#buttons {
-                text-align: center;
+                text-align: center; 
+                /* position: fixed;
+                top: 50%;
+                left: -5px;
+                transform: translate(0, -50%); */
             }
 
             div#buttons > button {
-                background-color: rgb(71, 193, 71);
-                padding: 8px;
+                text-align: center;
+                background-color: rgb(72, 192, 72);
+                padding: 8px 8px 8px 8px;
                 font-size: medium;
                 width: 100px;
+                /* margin-left: 0; */
+                /* display: block; */
+                border-radius: 22px;
+                transition: background-color 0.5s ease-in-out, color 0.1s ease-in-out;
+            }
+
+            div#buttons > button:hover {
+                color: rgb(60, 60, 60);
+                background-color: rgb(118, 253, 46);
             }
 
             span.th {
@@ -223,6 +237,11 @@
                 font-weight: bold;
                 width: 30%;
                 color: rgb(58, 57, 57);
+            }
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
             }
         </style>
     </head>
@@ -904,9 +923,9 @@
             fromEvent(speechImg, "click").subscribe(() => {
                 speech.init();
 
-                if (window.previouslyFocused) {
-                    window.previouslyFocused.focus();
-                }
+                // if (window.previouslyFocused) {
+                //     window.previouslyFocused.focus();
+                // }
             });
 
             function speech() {
@@ -924,11 +943,13 @@
                 let recording = false;
 
                 const commands = {
-                    end: "(край на диктовка|спри запис)",
+                    addR: "добави (запис|ред)",
+                    remR: "(изтрий|премахни) (запис|ред)",
                     save: "(запази|съхрани) (промяна|промени)",
                     export: "(направи експорт|запази хранилището)",
                     printR: "(принтирай|отпечатай) остатък",
                     printO: "(принтирай|отпечатай) разход",
+                    end: "(край на диктовка|спри запис)",
                     counter: 0,
                 };
 
@@ -964,6 +985,16 @@
                         if (resultIn(commands.end)) {
                             stop();
                             element.value = "";
+                            return;
+                        }
+
+                        if (resultIn(commands.addR)) {
+                            addBtn.click();
+                            return;
+                        }
+
+                        if (resultIn(commands.remR)) {
+                            removeBtn.click();
                             return;
                         }
 
