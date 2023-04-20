@@ -54,8 +54,9 @@
                 left: 30px;
                 width: 40px;
                 height: auto;
+                border: 1px solid rgb(237, 237, 237);
                 border-radius: 10px;
-                opacity: 1;
+                opacity: 0.84;
             }
 
             table {
@@ -257,14 +258,14 @@
             </div>
         </div>
         <img
-            src="https://github.com/vidul-nikolaev-petrov/medical-supplies-report/blob/main/img/logo.png?raw=true"
+            src="https://raw.githubusercontent.com/vidul-nikolaev-petrov/medical-supplies-report/main/img/logo.png"
             alt="Logo"
             class="logo"
             id="logo"
             data-hystmodal="#m-main"
         />
         <img
-            src="https://www.google.com/intl/en/chrome/assets/common/images/content/mic.gif"
+            src="https://raw.githubusercontent.com/vidul-nikolaev-petrov/medical-supplies-report/main/img/mic.gif"
             alt="Speech"
             class="speech"
             id="speech"
@@ -1045,7 +1046,7 @@
                 function stop() {
                     recording = false;
                     recognition.stop();
-                    speechImg.style.border = "0";
+                    speechImg.style.border = "1px solid rgb(237, 237, 237)";
                 }
 
                 speech.init = init;
@@ -1063,7 +1064,6 @@
 
             const modal = new HystModal({
                 linkAttributeName: "data-hystmodal",
-                //settings (optional). see API
             });
 
             function setPageVersion(id) {
