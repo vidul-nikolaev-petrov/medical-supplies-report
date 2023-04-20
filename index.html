@@ -88,6 +88,11 @@
                 background-color: rgb(215, 213, 213);
             }
 
+            tr td:first-child {
+                color: rgb(194, 194, 194);
+                font-size: small;
+            }
+
             table#results {
                 margin-top: 11px;
                 margin-bottom: 11px;
@@ -134,8 +139,8 @@
             }
 
             input[type="text"] {
-                color: rgb(73, 73, 73);
-                width: 76%;
+                color: rgb(100, 100, 100);
+                width: 90%;
             }
 
             input:focus {
@@ -303,7 +308,8 @@
         <table id="table-items">
             <thead>
                 <tr>
-                    <th width="40%" id="table-sort">
+                    <th width="2%"></th>
+                    <th width="38%" id="table-sort">
                         <span id="table-sort-up">&#8593;</span>
                         <span id="table-sort-down">&#8595;</span>
                         НАИМЕНОВАНИЕ
@@ -432,6 +438,7 @@
                 localStorageName = `${localStoragePrefix}-current`,
                 renderItemRow = (item) => {
                     const tr = document.createElement("tr"),
+                        tdId = document.createElement("td"),
                         tdName = document.createElement("td"),
                         tdQuantity = document.createElement("td"),
                         tdPrice = document.createElement("td"),
@@ -460,97 +467,101 @@
                                 tdOutgoPrice.innerText = "";
                             }
                         };
-                    (inputName.type = "text"),
-                        (inputName.value = item.name),
-                        inputName.addEventListener("input", () => {
-                            item.name = inputName.value;
-                        }),
+                    tdId.innerText = table.getElementsByTagName("tr").length;
+                    inputName.type = "text";
+                    inputName.value = item.name;
+                    inputName.addEventListener("input", () => {
+                        item.name = inputName.value;
+                    }),
                         inputName.addEventListener("focus", (e) => {
                             window.previouslyFocused = e.target;
                         });
-                    tdName.appendChild(inputName),
-                        (inputQuantity.type = "number"),
-                        (inputQuantity.min = "0"),
-                        (inputQuantity.step = "1"),
-                        (inputQuantity.value = item.quantity),
-                        inputQuantity.addEventListener("input", () => {
-                            if (!inputQuantity.validity.valid) {
-                                inputQuantity.value = "";
-                            }
-                            const val = parseInt(inputQuantity.value, 10);
-                            const valOutgo = parseInt(inputOutgoQuantity.value, 10);
-                            if (!Number.isNaN(val)) {
-                                item.quantity = val;
-                                inputPrice.disabled = false;
-                            } else {
-                                item.quantity = "";
-                                inputPrice.disabled = true;
-                            }
-                            if (val < valOutgo) showToast("Наличността е по-малка от разхода!");
-                            updateRowPrice();
-                            updateTotal();
-                        }),
-                        tdQuantity.appendChild(inputQuantity),
-                        (inputPrice.type = "number"),
-                        (inputPrice.min = "0"),
-                        (inputPrice.step = "0.01"),
-                        (inputPrice.value = item.price),
-                        (inputPrice.disabled = true),
-                        inputPrice.addEventListener("input", () => {
-                            if (!inputPrice.validity.valid) {
-                                inputPrice.value = "";
-                            }
-                            const val = parseFloat(inputPrice.value);
-                            if (!Number.isNaN(val)) {
-                                item.price = val;
-                                inputOutgoQuantity.disabled = false;
-                            } else {
-                                item.price = "";
-                                inputOutgoQuantity.disabled = true;
-                            }
-                            updateRowPrice();
-                            updateTotal();
-                            updateOutgo();
-                        }),
-                        (inputOutgoQuantity.type = "number"),
-                        (inputOutgoQuantity.min = "0"),
-                        (inputOutgoQuantity.step = "1"),
-                        (inputOutgoQuantity.value = item.outgoQuantity),
-                        (inputOutgoQuantity.disabled = true),
-                        inputOutgoQuantity.addEventListener("input", () => {
-                            if (!inputOutgoQuantity.validity.valid) {
-                                inputOutgoQuantity.value = "";
-                            }
-                            const val = parseInt(inputOutgoQuantity.value, 10);
-                            const valRemainder = parseInt(inputQuantity.value, 10);
-                            if (Number.isNaN(val)) {
-                                item.outgoQuantity = 0;
-                            } else {
-                                item.outgoQuantity = val;
-                            }
-                            if (val > valRemainder) showToast("Разходът надвишава наличността!");
-                            updateRowPrice();
-                            updateOutgo();
-                        }),
-                        tdPrice.appendChild(inputPrice),
-                        (removeBtn.innerHTML = "&#10060;"),
-                        (removeBtn.className = "remove-row"),
-                        removeBtn.addEventListener("click", () => {
-                            items = items.filter((i) => i !== item);
-                            updateTotal();
-                            updateOutgo();
-                            tr.remove();
-                        }),
-                        tdOutgoQuantity.appendChild(inputOutgoQuantity),
-                        tdAction.appendChild(removeBtn),
-                        tr.appendChild(tdName),
-                        tr.appendChild(tdQuantity),
-                        tr.appendChild(tdPrice),
-                        tr.appendChild(tdTotalPrice),
-                        tr.appendChild(tdOutgoQuantity),
-                        tr.appendChild(tdOutgoPrice),
-                        tr.appendChild(tdAction),
-                        table.querySelector("tbody").appendChild(tr);
+                    tdName.appendChild(inputName);
+                    inputQuantity.type = "number";
+                    inputQuantity.min = "0";
+                    inputQuantity.step = "1";
+                    inputQuantity.value = item.quantity;
+                    inputQuantity.addEventListener("input", () => {
+                        if (!inputQuantity.validity.valid) {
+                            inputQuantity.value = "";
+                        }
+                        const val = parseInt(inputQuantity.value, 10);
+                        const valOutgo = parseInt(inputOutgoQuantity.value, 10);
+                        if (!Number.isNaN(val)) {
+                            item.quantity = val;
+                            inputPrice.disabled = false;
+                        } else {
+                            item.quantity = "";
+                            inputPrice.disabled = true;
+                        }
+                        if (val < valOutgo) showToast("Наличността е по-малка от разхода!");
+                        updateRowPrice();
+                        updateTotal();
+                    });
+                    tdQuantity.appendChild(inputQuantity);
+                    inputPrice.type = "number";
+                    inputPrice.min = "0";
+                    inputPrice.step = "0.01";
+                    inputPrice.value = item.price;
+                    inputPrice.disabled = true;
+                    inputPrice.addEventListener("input", () => {
+                        if (!inputPrice.validity.valid) {
+                            inputPrice.value = "";
+                        }
+                        const val = parseFloat(inputPrice.value);
+                        if (!Number.isNaN(val)) {
+                            item.price = val;
+                            inputOutgoQuantity.disabled = false;
+                        } else {
+                            item.price = "";
+                            inputOutgoQuantity.disabled = true;
+                        }
+                        updateRowPrice();
+                        updateTotal();
+                        updateOutgo();
+                    });
+                    inputOutgoQuantity.type = "number";
+                    inputOutgoQuantity.min = "0";
+                    inputOutgoQuantity.step = "1";
+                    inputOutgoQuantity.value = item.outgoQuantity;
+                    inputOutgoQuantity.disabled = true;
+                    inputOutgoQuantity.addEventListener("input", () => {
+                        if (!inputOutgoQuantity.validity.valid) {
+                            inputOutgoQuantity.value = "";
+                        }
+                        const val = parseInt(inputOutgoQuantity.value, 10);
+                        const valRemainder = parseInt(inputQuantity.value, 10);
+                        if (Number.isNaN(val)) {
+                            item.outgoQuantity = 0;
+                        } else {
+                            item.outgoQuantity = val;
+                        }
+                        if (val > valRemainder) showToast("Разходът надвишава наличността!");
+                        updateRowPrice();
+                        updateOutgo();
+                    });
+                    tdPrice.appendChild(inputPrice), (removeBtn.innerHTML = "&#10060;");
+                    removeBtn.className = "remove-row";
+                    removeBtn.addEventListener("click", () => {
+                        items = items.filter((i) => i !== item);
+                        updateTotal();
+                        updateOutgo();
+                        tr.remove();
+                        table.querySelectorAll("tr").forEach((e, i) => {
+                            e.querySelector("td") && (e.querySelector("td").innerText = i);
+                        });
+                    });
+                    tdOutgoQuantity.appendChild(inputOutgoQuantity);
+                    tdAction.appendChild(removeBtn);
+                    tr.appendChild(tdId);
+                    tr.appendChild(tdName);
+                    tr.appendChild(tdQuantity);
+                    tr.appendChild(tdPrice);
+                    tr.appendChild(tdTotalPrice);
+                    tr.appendChild(tdOutgoQuantity);
+                    tr.appendChild(tdOutgoPrice);
+                    tr.appendChild(tdAction);
+                    table.querySelector("tbody").appendChild(tr);
                     // some CSS enhancements:
                     tdTotalPrice.className = "td-sum";
                     tdOutgoPrice.className = "td-sum";
