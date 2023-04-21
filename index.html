@@ -343,7 +343,7 @@
             <button id="import-items-outer" style="display: none">Импорт</button>
             <button id="export-items" style="display: none">Експорт</button>
             <button id="finalize" style="display: none">Финализирай</button>
-            <button id="print-items-r" style="display: block">Принт О</button>
+            <button id="print-items-r" style="display: none">Принт О</button>
             <button id="print-items-o" style="display: none">Принт Р</button>
             <input type="file" id="importFile" style="display: none" accept=".json" />
         </div>
@@ -577,7 +577,7 @@
                 const html = {
                     css: `
                         <style>
-                            @page { size: auto; margin-top: 8mm; margin-bottom: 10mm; }
+                            @page { size: auto; margin-top: 8mm; margin-bottom: 4mm; }
                             body { -webkit-print-color-adjust: exact; }
                             div#title { padding-top: 5%; text-align: center; }
                             div.center { padding-top: 2%; text-align: center; }
@@ -651,6 +651,9 @@
                 function _printer({ htmlTitle, htmlFooter, body, settings, totalPrice }) {
                     const w = window.open("", "PRINT");
                     const wadd = (str) => w.document.write(str);
+                    const pageBreak = ` <tr class="page-break" colspan="5">
+                                            <td>blank</td>
+                                        </tr>`;
 
                     wadd(`<html>`);
                     wadd(`
@@ -681,31 +684,24 @@
                                 </tr>`
                     );
                     let row;
-                    for (let e = 1; e < body.length; e++) {
+                    for (let e = 0; e < body.length; e++) {
                         // invoke jump to the next page
-                        if (e < 30 && !(e % 28)) { // 1st page
+                        if (e > 0 && e < 30 && !(e % 28)) {
+                            // 1st page
                             row = body[e];
                             for (let i = 0; i <= 2; i++) {
-                                wadd(`
-                                    <tr class="page-break" colspan="5">
-                                        <td>blank</td>
-                                    </tr>
-                                `);
+                                wadd(pageBreak);
                             }
-                        } else if (e > 32 && !(e % 32)) {
+                        } else if (!((e - 28) % 37)) {
                             row = body[e];
-                            for (let i = 0; i <= 2  ; i++) {
-                                wadd(`
-                                    <tr class="page-break" colspan="5">
-                                        <td>blank</td>
-                                    </tr>
-                                `);
+                            for (let i = 0; i <= 2; i++) {
+                                wadd(pageBreak);
                             }
                         } else {
                             if (row) {
                                 wadd(`
                                     <tr>
-                                        <td>${e - 1}</td>
+                                        <td>${e}</td>
                                         <td>${row[0]}</td>
                                         <td>${row[1]}</td>
                                         <td>${row[2]}</td>
@@ -716,7 +712,7 @@
                             }
                             wadd(`
                                 <tr>
-                                    <td>${e}</td>
+                                    <td>${e + 1}</td>
                                     <td>${body[e][0]}</td>
                                     <td>${body[e][1]}</td>
                                     <td>${body[e][2]}</td>
