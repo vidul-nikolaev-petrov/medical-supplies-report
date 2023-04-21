@@ -693,34 +693,19 @@
                                     <td>Сума</td>
                                 </tr>`
                     );
-                    let row;
+                    const firstPageRows = 28;
+                    const rowsPerPage = 36;
                     for (let e = 0; e < body.length; e++) {
                         // invoke jump to the next page
-                        if (e > 0 && e < 30 && !(e % 28)) {
-                            // 1st page
-                            row = body[e];
+                        if (
+                            (e > 0 && e < 30 && !(e % firstPageRows)) ||
+                            !((e - firstPageRows) % rowsPerPage)
+                        ) {
                             for (let i = 0; i <= 2; i++) {
                                 wadd(pageBreak);
                             }
-                        } else if (!((e - 28) % 37)) {
-                            row = body[e];
-                            for (let i = 0; i <= 2; i++) {
-                                wadd(pageBreak);
-                            }
-                        } else {
-                            if (row) {
-                                wadd(`
-                                    <tr>
-                                        <td>${e}</td>
-                                        <td>${row[0]}</td>
-                                        <td>${row[1]}</td>
-                                        <td>${row[2]}</td>
-                                        <td>${row[3]}</td>
-                                    </tr>
-                                `);
-                                row = undefined;
-                            }
-                            wadd(`
+                        }
+                        wadd(`
                                 <tr>
                                     <td>${e + 1}</td>
                                     <td>${body[e][0]}</td>
@@ -728,8 +713,7 @@
                                     <td>${body[e][2]}</td>
                                     <td>${body[e][3]}</td>
                                 </tr>
-                            `);
-                        }
+                        `);
                     }
                     wadd(`
                             <tr id="footer">
@@ -742,8 +726,14 @@
                     `);
                     wadd(`</table>`);
 
-                    if (body.length > 22 && body.length <= 28) {
-                        const medium = 28 - body.length + 2;
+                    // offset after the table
+                    if (body.length > 22 && body.length <= firstPageRows) {
+                        const medium = firstPageRows - body.length + 2;
+                        tableBreak(medium);
+                    }
+                    if ((body.length - firstPageRows) % rowsPerPage > 30) {
+                        // 31 rows allow footer
+                        const medium = 5 + rowsPerPage - ((body.length - firstPageRows) % rowsPerPage);
                         tableBreak(medium);
                     }
 
