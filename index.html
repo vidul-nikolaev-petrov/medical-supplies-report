@@ -343,7 +343,7 @@
             <button id="import-items-outer" style="display: none">Импорт</button>
             <button id="export-items" style="display: none">Експорт</button>
             <button id="finalize" style="display: none">Финализирай</button>
-            <button id="print-items-r" style="display: none">Принт О</button>
+            <button id="print-items-r" style="display: block">Принт О</button>
             <button id="print-items-o" style="display: none">Принт Р</button>
             <input type="file" id="importFile" style="display: none" accept=".json" />
         </div>
@@ -590,6 +590,8 @@
                             tr#footer { background-color: #CCC; }
                             tr#subheader { background-color: white; }
                             tr:nth-child(even) { background: #F9F9F9; }
+                            tr.page-break { border: 0; background: white !important; }
+                            tr.page-break td { border: 0; }
                             div.footer { display: block; clear: both; margin: 10% 15%; font-size: 13px; }
                             div.total-price { text-align: center; }
                             span.left { float: left; }
@@ -658,36 +660,71 @@
                         </head>
                     `);
                     wadd(
-                        `<body>
-                        <h3><div id="title">${settings.institution}</div><h3>
-                        <h3><div class="center">${htmlTitle} НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ</div><h3>
-                        <h5><div class="center">за период:&nbsp;&nbsp;${settings.peroidRange}</div></h5>
-                        <div class="center">&nbsp;</div>
-                        <table>
-                            <tr>
-                                <th colspan="2">Наименование</th>
-                                <th>Единична цена</th>
-                                <th colspan="2">Остатък</th>
-                            </tr>
-                            <tr id="subheader">
-                                <td class="nobr"></td>
-                                <td class="nobl"></td>
-                                <td></td>
-                                <td>Количество</td>
-                                <td>Сума</td>
-                            </tr>`
+                        `
+                        <body>
+                            <h3><div id="title">${settings.institution}</div><h3>
+                            <h3><div class="center">${htmlTitle} НА МЕДИКАМЕНТИТЕ В СПЕШЕН ШКАФ</div><h3>
+                            <h5><div class="center">за период:&nbsp;&nbsp;${settings.peroidRange}</div></h5>
+                            <div class="center">&nbsp;</div>
+                            <table>
+                                <tr>
+                                    <th colspan="2">Наименование</th>
+                                    <th>Единична цена</th>
+                                    <th colspan="2">Остатък</th>
+                                </tr>
+                                <tr id="subheader">
+                                    <td class="nobr"></td>
+                                    <td class="nobl"></td>
+                                    <td></td>
+                                    <td>Количество</td>
+                                    <td>Сума</td>
+                                </tr>`
                     );
-                    body.forEach((e, index) =>
-                        wadd(`
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${e[0]}</td>
-                                <td>${e[1]}</td>
-                                <td>${e[2]}</td>
-                                <td>${e[3]}</td>
-                            </tr>
-                    `)
-                    );
+                    let row;
+                    for (let e = 1; e < body.length; e++) {
+                        // invoke jump to the next page
+                        if (e < 30 && !(e % 28)) { // 1st page
+                            row = body[e];
+                            for (let i = 0; i <= 2; i++) {
+                                wadd(`
+                                    <tr class="page-break" colspan="5">
+                                        <td>blank</td>
+                                    </tr>
+                                `);
+                            }
+                        } else if (e > 32 && !(e % 32)) {
+                            row = body[e];
+                            for (let i = 0; i <= 2  ; i++) {
+                                wadd(`
+                                    <tr class="page-break" colspan="5">
+                                        <td>blank</td>
+                                    </tr>
+                                `);
+                            }
+                        } else {
+                            if (row) {
+                                wadd(`
+                                    <tr>
+                                        <td>${e - 1}</td>
+                                        <td>${row[0]}</td>
+                                        <td>${row[1]}</td>
+                                        <td>${row[2]}</td>
+                                        <td>${row[3]}</td>
+                                    </tr>
+                                `);
+                                row = undefined;
+                            }
+                            wadd(`
+                                <tr>
+                                    <td>${e}</td>
+                                    <td>${body[e][0]}</td>
+                                    <td>${body[e][1]}</td>
+                                    <td>${body[e][2]}</td>
+                                    <td>${body[e][3]}</td>
+                                </tr>
+                            `);
+                        }
+                    }
                     wadd(`
                             <tr id="footer">
                                 <td class="nobr"></td>
