@@ -1044,92 +1044,108 @@
                     recording = true;
                     recognition.start();
                     recognition.onresult = function (event) {
-                        const element = document.activeElement;
-                        const resultsLength = event.results.length - 1;
-                        const arrLength = event.results[resultsLength].length - 1;
-                        let result = event.results[resultsLength][0].transcript;
+                        let interimResultTimeout;
 
-                        result = result.trim();
+                        clearTimeout(interimResultTimeout);
 
-                        if (commandsReg.test(result)) {
-                            commands.counter++;
-                            if (commands.counter > 1) {
-                                setTimeout(() => (commands.counter = 0), 1000);
+                        interimResultTimeout = setTimeout(() => {
+                            processResults();
+                        }, 512);
+
+                        function processResults() {
+                            const element = document.activeElement;
+                            const resultsLength = event.results.length - 1;
+                            const arrLength = event.results[resultsLength].length - 1;
+                            const result = event.results[resultsLength][0].transcript.trim();
+
+                            if (commandsReg.test(result)) {
+                                commands.counter++;
+                                if (commands.counter > 1) {
+                                    setTimeout(() => (commands.counter = 0), 1000);
+                                    return;
+                                }
+                            }
+
+                            if (resultIn(commands.end)) {
+                                stop();
+                                element.value = "";
                                 return;
                             }
-                        }
 
-                        if (resultIn(commands.end)) {
-                            stop();
-                            element.value = "";
-                            return;
-                        }
-
-                        if (resultIn(commands.addR)) {
-                            addBtn.click();
-                            return;
-                        }
-
-                        if (resultIn(commands.remR)) {
-                            removeBtn.click();
-                            return;
-                        }
-
-                        if (resultIn(commands.remRN)) {
-                            removeRowN(result);
-                            return;
-                        }
-
-                        if (resultIn(commands.save)) {
-                            element.blur();
-                            saveBtn.click();
-                            return;
-                        }
-
-                        if (resultIn(commands.export)) {
-                            exportBtn.click();
-                            return;
-                        }
-
-                        if (resultIn(commands.printR)) {
-                            command = true;
-                            printBtnR.click();
-                            return;
-                        }
-
-                        if (resultIn(commands.printO)) {
-                            command = true;
-                            printBtnO.click();
-                            return;
-                        }
-
-                        command = false;
-
-                        if (element.type === "text") {
-                            result = result.charAt(0).toUpperCase() + result.slice(1);
-                        }
-
-                        element.value = result;
-                        element.dispatchEvent(new Event("input"));
-
-                        function resultIn(command) {
-                            return new RegExp(command).test(result);
-                        }
-
-                        function removeRowN(result) {
-                            if (!new RegExp(/\s+\d+$/).test(result)) {
-                                result = words2numbers(result);
-                            } else {
-                                result = result.split(" ").at(-1);
+                            if (resultIn(commands.addR)) {
+                                addBtn.click();
+                                return;
                             }
 
-                            if (!result) return;
+                            if (resultIn(commands.remR)) {
+                                removeBtn.click();
+                                return;
+                            }
 
-                            table
-                                .querySelector("tbody")
-                                .querySelector(`tr:nth-of-type(${result})`)
-                                .querySelector("button")
-                                .click();
+                            if (resultIn(commands.remRN)) {
+                                removeRowN(result);
+                                return;
+                            }
+
+                            if (resultIn(commands.save)) {
+                                element.blur();
+                                saveBtn.click();
+                                return;
+                            }
+
+                            if (resultIn(commands.export)) {
+                                exportBtn.click();
+                                return;
+                            }
+
+                            if (resultIn(commands.printR)) {
+                                command = true;
+                                printBtnR.click();
+                                return;
+                            }
+
+                            if (resultIn(commands.printO)) {
+                                command = true;
+                                printBtnO.click();
+                                return;
+                            }
+
+                            command = false;
+
+                            if (element.type === "text") {
+                                element.value = result.charAt(0).toUpperCase() + result.slice(1);
+                            } else {
+                                element.value = result;
+                            }
+
+                            element.dispatchEvent(new Event("input"));
+
+                            function resultIn(command) {
+                                return new RegExp(command).test(result);
+                            }
+
+                            function removeRowN(result) {
+                                console.log(">", result);
+
+                                if (new RegExp(/\s+\d+$/).test(result)) {
+                                    result = result.split(" ").at(-1);
+                                } else {
+                                    result = words2numbers(result);
+                                }
+
+                                console.log("<", result);
+
+                                try {
+                                    table
+                                        .querySelector("tbody")
+                                        .querySelector(`tr:nth-of-type(${result})`)
+                                        .querySelector("button")
+                                        .click();
+                                    showToast(`Записът №${result} беше изтрит.`);
+                                } catch (e) {
+                                    console.log(e.message);
+                                }
+                            }
                         }
                     };
 
