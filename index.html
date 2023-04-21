@@ -267,7 +267,7 @@
             #scroll-up {
                 bottom: 110px;
             }
-            #table-sort {
+            #table-sort:hover {
                 cursor: grab;
             }
             #table-sort-down #table-sort-up {
@@ -346,7 +346,7 @@
             <button id="import-items-outer" style="display: none">Импорт</button>
             <button id="export-items" style="display: none">Експорт</button>
             <button id="finalize" style="display: none">Финализирай</button>
-            <button id="print-items-r" style="display: none">Принт О</button>
+            <button id="print-items-r" style="display: block">Принт О</button>
             <button id="print-items-o" style="display: none">Принт Р</button>
             <input type="file" id="importFile" style="display: none" accept=".json" />
         </div>
@@ -657,6 +657,13 @@
                     const pageBreak = ` <tr class="page-break" colspan="5">
                                             <td>&nbsp;</td>
                                         </tr>`;
+                    const tableBreak = (counter) => {
+                        wadd("<table>");
+                        for (let i = 0; i < counter; i++) {
+                            wadd(pageBreak);
+                        }
+                        wadd("</table>");
+                    };
 
                     wadd(`<html>`);
                     wadd(`
@@ -734,6 +741,11 @@
                             </tr>
                     `);
                     wadd(`</table>`);
+
+                    if (body.length > 22 && body.length <= 28) {
+                        const medium = 28 - body.length + 2;
+                        tableBreak(medium);
+                    }
 
                     wadd(`
                         <div class="footer total-price">
