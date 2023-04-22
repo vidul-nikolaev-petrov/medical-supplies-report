@@ -22,7 +22,7 @@
                 font-size: medium;
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
                 background-color: rgb(243, 243, 243);
-                padding: 1% 8%;
+                padding: 0;
                 margin: 0;
                 height: 100%;
                 opacity: 0;
@@ -52,9 +52,10 @@
 
             table {
                 border-collapse: collapse;
-                width: 80%;
+                width: 76%;
                 margin: auto;
                 table-layout: fixed;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             }
 
             th,
@@ -79,16 +80,16 @@
                 background-color: rgb(215, 213, 213);
             }
 
-            tr td:first-child {
+            table#table-items tr td:first-child {
                 color: rgb(194, 194, 194);
                 font-size: small;
             }
 
             table#results {
-                margin-top: 11px;
-                margin-bottom: 11px;
+                margin-top: 10px;
                 font-size: 14px;
                 font-weight: bold;
+                color:rgb(63, 63, 63);
                 background-color: rgb(212, 208, 200);
                 border-radius: 10px;
             }
@@ -158,6 +159,7 @@
             }
 
             div#buttons {
+                margin: 44px;
                 text-align: center;
                 /* position: fixed;
                 top: 50%;
@@ -735,7 +737,7 @@
                         // 31 rows allow footer
                         const medium = 4 + rowsPerPage - ((body.length - firstPageRows) % rowsPerPage);
                         tableBreak(medium);
-                    } else  if ((body.length - firstPageRows) % rowsPerPage === 0) {
+                    } else if ((body.length - firstPageRows) % rowsPerPage === 0) {
                         tableBreak(4);
                     }
 
@@ -893,6 +895,14 @@
 
                 function getDisplayVal(el) {
                     return window.getComputedStyle(el).getPropertyValue("display");
+                }
+            });
+
+            fromEvent(addBtn, "click").subscribe(() => {
+                const scrollUpButton = document.getElementById("scroll-up");
+
+                if (scrollUpButton.style.display === "block") {
+                    window.scrollTo(0,document.body.scrollHeight);
                 }
             });
 
