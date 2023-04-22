@@ -154,13 +154,22 @@
                 text-align: center;
             }
 
+            /* buttons */
+            .noselect {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
             button {
                 border: none;
                 color: aliceblue;
                 margin: 10px;
                 padding: 2px;
             }
-
             button.remove-row {
                 opacity: 0.15;
             }
@@ -169,29 +178,41 @@
             }
 
             div#buttons {
-                margin: 44px;
-                text-align: center;
-                /* position: fixed;
-                top: 50%;
-                left: -5px;
-                transform: translate(0, -50%); */
+                margin-top: 44px;
+                margin-bottom: 44px;
+                height: 33.33%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             div#buttons > button {
+                display: inline-block;
+                outline: none;
+                cursor: pointer;
+                font-size: 14px;
+                line-height: 1;
+                border-radius: 500px;
+                transition-property: background-color, border-color, color, box-shadow, filter;
+                transition-duration: 0.3s;
+                border: 1px solid transparent;
+                letter-spacing: 2px;
+                min-width: 160px;
+                text-transform: uppercase;
+                white-space: normal;
+                font-weight: 700;
                 text-align: center;
-                background-color: rgb(72, 192, 72);
-                padding: 8px 8px 8px 8px;
-                font-size: medium;
-                width: 100px;
-                /* margin-left: 0; */
-                /* display: block; */
-                border-radius: 22px;
-                transition: background-color 0.5s ease-in-out, color 0.1s ease-in-out;
+                padding: 12px 14px 18px;
+                color: #616467;
+                box-shadow: inset 0 0 0 2px #616467;
+                background-color: transparent;
+                height: 38px;
             }
 
             div#buttons > button:hover {
-                color: rgb(60, 60, 60);
-                background-color: rgb(118, 253, 46);
+                color: #fff;
+                background-color: #616467;
             }
 
             span.th {
