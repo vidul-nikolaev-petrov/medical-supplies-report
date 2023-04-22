@@ -55,7 +55,7 @@
                 width: 76%;
                 margin: auto;
                 table-layout: fixed;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             }
 
             th,
@@ -83,13 +83,20 @@
             table#table-items tr td:first-child {
                 color: rgb(194, 194, 194);
                 font-size: small;
+                position: relative;
+            }
+
+            table#table-items thead {
+                position: sticky;
+                top: 0;
+                z-index: 1;
             }
 
             table#results {
                 margin-top: 10px;
                 font-size: 14px;
                 font-weight: bold;
-                color:rgb(63, 63, 63);
+                color: rgb(63, 63, 63);
                 background-color: rgb(212, 208, 200);
                 border-radius: 10px;
             }
@@ -107,11 +114,6 @@
             table#results td.right {
                 text-align: right;
                 font-weight: lighter;
-            }
-
-            button {
-                margin: 10px;
-                padding: 10px;
             }
 
             p {
@@ -153,9 +155,17 @@
             }
 
             button {
-                padding: 2px;
                 border: none;
                 color: aliceblue;
+                margin: 10px;
+                padding: 2px;
+            }
+
+            button.remove-row {
+                opacity: 0.15;
+            }
+            button.remove-row:hover {
+                opacity: 1;
             }
 
             div#buttons {
@@ -902,7 +912,7 @@
                 const scrollUpButton = document.getElementById("scroll-up");
 
                 if (scrollUpButton.style.display === "block") {
-                    window.scrollTo(0,document.body.scrollHeight);
+                    window.scrollTo(0, document.body.scrollHeight);
                 }
             });
 
