@@ -437,6 +437,8 @@
                 // speech to text
                 speechImg = document.getElementById("speech"),
                 showCommands = document.getElementById("show-commands"),
+                // main menu
+                logo = document.getElementById("logo"),
                 updateTotal = () => {
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
@@ -1283,6 +1285,10 @@
                     event.preventDefault();
                     showCommands.click();
                 }
+                if (event.ctrlKey && event.keyCode === 77) {
+                    event.preventDefault();
+                    logo.click();
+                }
             });
 
             speech();
@@ -1523,8 +1529,9 @@
                             <div class="link short">
                                 • клавишни комбинации:
                                 <ul class="voice-commands">
-                                    <li><b>Ctrl+L</b> - старт / стоп на гласови команди</li>
+                                    <li><b>Ctrl+L</b> - показва основното меню</li>
                                     <li><b>Ctrl+K</b> - показва меню с командите</li>
+                                    <li><b>Ctrl+L</b> - старт / стоп на гласови команди</li>
                                 </ul>
                             </div>
                             <div class="link short">
