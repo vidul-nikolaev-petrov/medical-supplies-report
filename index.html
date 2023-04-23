@@ -53,6 +53,22 @@
                 opacity: 0.84;
             }
 
+            div#show-commands {
+                position: fixed;
+                padding: 8px;
+                margin: 8px;
+                font-size: large;
+                background-color: white;
+                border-radius: 8px;
+                opacity: 0.5;
+                top: 0;
+                right: 0;
+            }
+
+            div#show-commands:hover {
+                opacity: 0.65;
+            }
+
             table {
                 border-collapse: collapse;
                 width: 70%;
@@ -330,6 +346,7 @@
         </div>
         <img src="img/logo.png" alt="Logo" class="logo" id="logo" data-hystmodal="#m-main" />
         <img src="img/mic.gif" alt="Speech" class="speech" id="speech" />
+        <div id="show-commands" data-hystmodal="#m-show-commands">&#x2318;</div>
         <table id="table-items">
             <thead>
                 <tr>
@@ -419,6 +436,7 @@
                 peroidRange = document.getElementById("period-range"),
                 // speech to text
                 speechImg = document.getElementById("speech"),
+                showCommands = document.getElementById("show-commands"),
                 updateTotal = () => {
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
@@ -1222,7 +1240,7 @@
                                 if (new RegExp(/\s+\d+$/).test(result)) {
                                     result = result.split(" ").at(-1);
                                 } else {
-                                    result = words2numbers(result);
+                                    result = words2numsBG(result);
                                 }
 
                                 try {
@@ -1260,6 +1278,10 @@
                 if (event.ctrlKey && event.keyCode === 76) {
                     event.preventDefault();
                     speechImg.click();
+                }
+                if (event.ctrlKey && event.keyCode === 75) {
+                    event.preventDefault();
+                    showCommands.click();
                 }
             });
 
@@ -1382,6 +1404,13 @@
             div.modal-body {
                 padding: 4%;
             }
+            ul.voice-commands {
+                margin: 5px;
+            }
+            ul.voice-commands li {
+                font-size: small;
+                font-style: italic;
+            }
         </style>
         <div class="hystmodal" id="m-main" aria-hidden="true">
             <div class="hystmodal__wrap">
@@ -1482,23 +1511,37 @@
                         <div class="link short">• лиценз: <b>GPLv3</b></div>
                         <div class="link short">• автор: <b>Видул Петров</b></div>
                         <div class="link short">• съавтор: <b>Теодора Монева</b></div>
-                        <div class="link short">
-                            • гласови команди (<i>Ctrl+L</i>):
-                            <ul id="voice-commands">
-                                <script>
-                                    const ul = document.getElementById("voice-commands");
-                                    ul.style.margin = "5px";
-                                    Object.values(speech.commands)
-                                        .filter(isNaN)
-                                        .forEach((e) => {
-                                            const li = document.createElement("li");
-                                            li.textContent = e;
-                                            li.style.fontStyle = "italic";
-                                            li.style.fontSize = "small";
-                                            ul.appendChild(li);
-                                        });
-                                </script>
-                            </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="hystmodal" id="m-show-commands" aria-hidden="true">
+                <div class="hystmodal__wrap">
+                    <div class="hystmodal__window" role="dialog" aria-modal="true">
+                        <button data-hystclose class="hystmodal__close">Затовори</button>
+                        <div class="modal-header">Команди</div>
+                        <div class="modal-body">
+                            <div class="link short">
+                                • клавишни комбинации:
+                                <ul class="voice-commands">
+                                    <li><b>Ctrl+L</b> - старт / стоп на гласови команди</li>
+                                    <li><b>Ctrl+K</b> - показва меню с командите</li>
+                                </ul>
+                            </div>
+                            <div class="link short">
+                                • гласови команди:
+                                <ul class="voice-commands" id="voice-commands">
+                                    <script>
+                                        const ul = document.getElementById("voice-commands");
+                                        Object.values(speech.commands)
+                                            .filter(isNaN)
+                                            .forEach((e) => {
+                                                const li = document.createElement("li");
+                                                li.textContent = e;
+                                                ul.appendChild(li);
+                                            });
+                                    </script>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
