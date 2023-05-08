@@ -211,26 +211,26 @@ function nums2wordsBG(string) {
         }
     }
 
-    function currency(string, format={lv: "лева", st: "стотинки", separator:"и"}) {
-        // expects the dot format: 15.88
+    function currency(string, format={}) {
+        let { labelLv = "лева", labelSt = "стотинки", separator = " и " } = format;
         let [lv, st] = String(string).split(".").map(nums2wordsBG);
-        lv = lv.replace("едно", nums[1].gender[1].m);
-        st = st.replace("едно", nums[1].gender[1].f);
+        lv = lv.replace(nums[1][1], nums[1].gender[1].m);
+        st = st.replace(nums[1][1], nums[1].gender[1].f);
 
         if (lv === nums[1].gender[1].m) {
-            format.lv = "лев";
+            labelLv = "лев";
         } else if (!lv) {
             lv = nums[1][0];
         }
         
         if (st === nums[1].gender[1].f) {
-            format.st = "стотинка";
+            labelSt = "стотинка";
         } else if (!st) {
             st = nums[1][0];
         }
 
 
-        return `${lv} ${format.lv} ${format.separator} ${st} ${format.st}`;
+        return `${lv} ${labelLv}${separator}${st} ${labelSt}`;
     }
 
     if (!string) {
@@ -250,5 +250,3 @@ if (typeof module !== "undefined" && module.exports) {
 // quick check:
 // const log = (e) => console.log(nums2wordsBG(String(e)));
 // [1, 8, 16, 32, 128, 256, 1024, 12021, 20048, 400960, 801920, 800008].forEach(log);
-
-console.log(nums2wordsBG.currency("0.19"));
