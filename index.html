@@ -8,7 +8,7 @@
         <meta name="version" content="1.0.6" />
         <title>Лекарствен Отчет</title>
         <script src="libs/js/rxjs.umd.min.js"></script>
-        <script src="libs/js/numberToString.js"></script>
+        <script src="libs/js/nums2wordsBG.js"></script>
         <script src="libs/js/easepick.min.js"></script>
         <script src="libs/js/hystmodal.min.js"></script>
         <script src="libs/js/words2numbers.js"></script>
@@ -832,10 +832,7 @@
                 }
 
                 function numberToWord(number) {
-                    const res = numberToString.convert(number);
-
-                    return `${res.convertedInteger} ${res.integerCurrency} и
-                            ${res.convertedFractional}  ${res.fractionalCurrency}`;
+                    return nums2wordsBG.currency(number);
                 }
 
                 printer.printRemainder = remainder;
