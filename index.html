@@ -8,12 +8,15 @@
         <meta name="version" content="1.0.6" />
         <title>Лекарствен Отчет</title>
         <script src="libs/js/rxjs.umd.min.js"></script>
-        <script src="libs/js/nums2wordsBG.js"></script>
         <script src="libs/js/easepick.min.js"></script>
         <script src="libs/js/hystmodal.min.js"></script>
-        <script src="libs/js/words2numbers.js"></script>
         <script src="libs/js/toastify.js"></script>
         <script src="libs/js/moment.js"></script>
+        <script src="libs/js/words2numbers.js"></script>
+        <script type="module">
+            import nums2wordsBG from "./libs/js/nums2wordsBG.js";
+            window.nums2wordsBG = nums2wordsBG;
+        </script>
         <link rel="stylesheet" type="text/css" href="libs/css/toastify.min.css" />
         <link rel="stylesheet" type="text/css" href="libs/css/hystmodal.min.css" />
         <link rel="icon" type="image/x-icon" href="img/logo.ico" />
@@ -349,7 +352,8 @@
                 <input type="text" id="institution" placeholder="Учебно заведение" />
             </div>
             <div class="header" id="body">
-                за период <input type="text" id="period-range" placeholder="липват данни" />
+                за период
+                <input type="text" id="period-range" placeholder="липват данни" />
             </div>
         </div>
         <img src="img/logo.png" alt="Logo" class="logo" id="logo" data-hystmodal="#m-main" />
