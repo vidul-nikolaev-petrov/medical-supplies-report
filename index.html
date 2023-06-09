@@ -473,6 +473,7 @@
                 // speech to text
                 speechImg = document.getElementById("speech"),
                 showCommands = document.getElementById("show-commands"),
+                showManuals = document.getElementById("show-help"),
                 // main menu
                 logo = document.getElementById("logo"),
                 updateTotal = () => {
@@ -1314,13 +1315,17 @@
             }
 
             document.addEventListener("keydown", function (event) {
-                if (event.ctrlKey && event.keyCode === 76) {
+                if (event.ctrlKey && event.keyCode === 72) {
                     event.preventDefault();
-                    speechImg.click();
+                    showManuals.click();
                 }
                 if (event.ctrlKey && event.keyCode === 75) {
                     event.preventDefault();
                     showCommands.click();
+                }
+                if (event.ctrlKey && event.keyCode === 76) {
+                    event.preventDefault();
+                    speechImg.click();
                 }
                 if (event.ctrlKey && event.keyCode === 77) {
                     event.preventDefault();
@@ -1572,6 +1577,7 @@
                         <div class="link short">
                             • клавишни комбинации:
                             <ul class="voice-commands">
+                                <li><b>Ctrl+h</b> - показва упътването</li>
                                 <li><b>Ctrl+m</b> - показва основното меню</li>
                                 <li><b>Ctrl+k</b> - показва меню с командите</li>
                                 <li><b>Ctrl+l</b> - старт / стоп на гласови команди</li>
@@ -1598,19 +1604,19 @@
         </div>
         <div class="hystmodal" id="m-show-help" aria-hidden="true">
             <div class="hystmodal__wrap">
-                <div class="hystmodal__window" role="dialog" aria-modal="true">
+                <div class="hystmodal__window" role="dialog" aria-modal="true" style="width: 44%">
                     <button data-hystclose class="hystmodal__close">Затовори</button>
                     <div class="modal-header">Относно MSR</div>
                     <div class="modal-body">
                         <div class="manuals">
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-Ipsum has been the industry's standard dummy text ever since the 1500s, when an
-unknown printer took a galley of type and scrambled it to make a type specimen
-book. It has survived not only five centuries, but also the leap into electronic
-typesetting, remaining essentially unchanged. It was popularised in the 1960s with
-the release of Letraset sheets containing Lorem Ipsum passages, and more recently
-with desktop publishing software like Aldus PageMaker including versions of Lorem
-Ipsum.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+                            Ipsum has been the industry's standard dummy text ever since the 1500s, when an
+                            unknown printer took a galley of type and scrambled it to make a type specimen
+                            book. It has survived not only five centuries, but also the leap into electronic
+                            typesetting, remaining essentially unchanged. It was popularised in the 1960s with
+                            the release of Letraset sheets containing Lorem Ipsum passages, and more recently
+                            with desktop publishing software like Aldus PageMaker including versions of Lorem
+                            Ipsum.
                         </div>
                     </div>
                 </div>
