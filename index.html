@@ -5,7 +5,7 @@
         <meta name="description" content="Лекарствени Отчети" />
         <meta name="author" content="Видул Николаев Петров" />
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
-        <meta name="version" content="1.0.6" />
+        <meta name="version" content="1.0.7" />
         <title>Лекарствен Отчет</title>
         <script src="libs/js/rxjs.umd.min.js"></script>
         <script src="libs/js/easepick.min.js"></script>
@@ -79,6 +79,23 @@
                 opacity: 0.5;
             }
 
+            div#show-help {
+                position: fixed;
+                padding: 8px 12px 8px 12px;
+                margin: 8px;
+                font-size: large;
+                background-color: white;
+                border-radius: 8px;
+                opacity: 0.25;
+                bottom: 0;
+                right: 0;
+                cursor: pointer;
+            }
+
+            div#show-help:hover {
+                opacity: 0.5;
+            }
+
             table {
                 border-collapse: collapse;
                 width: 70%;
@@ -123,6 +140,12 @@
                 top: 0;
                 z-index: 1;
             }
+            table#table-items span.thQuantity {
+                margin-right: 5%;
+            }
+            table#table-items span.thOutgoQ {
+                margin-right: 13%;
+            }
 
             table#results {
                 margin-top: 10px;
@@ -162,7 +185,7 @@
                 font-size: medium;
                 border-radius: 5px;
                 box-sizing: border-box;
-                width: 50%;
+                width: 65%;
                 color: #504f4f;
                 font-family: "Abel";
                 font-size: 17px;
@@ -359,6 +382,7 @@
         <img src="img/logo.png" alt="Logo" class="logo" id="logo" data-hystmodal="#m-main" />
         <img src="img/mic.gif" alt="Speech" class="speech" id="speech" />
         <div id="show-commands" data-hystmodal="#m-show-commands">&#x2318;</div>
+        <div id="show-help" data-hystmodal="#m-show-help">&#63;</div>
         <table id="table-items">
             <thead>
                 <tr>
@@ -371,16 +395,16 @@
                     <th width="30%" colspan="2">
                         <div>ОСТАТЪК</div>
                         <div class="th">
-                            <span class="th">Количество</span>
-                            <span class="th">Единична цена</span>
+                            <span class="th thQuantity">Количество</span>
+                            <span class="th thPrice">Единична цена</span>
                         </div>
                     </th>
                     <th width="10%">&#8721;</th>
                     <th width="20%" colspan="2">
                         <div>РАЗХОД</div>
                         <div class="th">
-                            <span class="outgo">Количество</span>
-                            <span class="outgo">&#8721;</span>
+                            <span class="outgo thOutgoQ">Количество</span>
+                            <span class="outgo thOutgoS">&#8721;</span>
                         </div>
                     </th>
                     <th width=""></th>
@@ -1389,6 +1413,11 @@
                 margin-left: 4%;
                 padding: 3%;
             }
+            div.hystmodal__window div.manuals {
+                color: rgb(109, 109, 109) !important;
+                text-align: justify;
+                padding: 3%;
+            }
             div.hystmodal__window div.short {
                 margin-left: 4%;
                 padding: 1%;
@@ -1533,35 +1562,55 @@
                     </div>
                 </div>
             </div>
-            <div class="hystmodal" id="m-show-commands" aria-hidden="true">
-                <div class="hystmodal__wrap">
-                    <div class="hystmodal__window" role="dialog" aria-modal="true">
-                        <button data-hystclose class="hystmodal__close">Затовори</button>
-                        <div class="modal-header">Команди</div>
-                        <div class="modal-body">
-                            <div class="link short">
-                                • клавишни комбинации:
-                                <ul class="voice-commands">
-                                    <li><b>Ctrl+m</b> - показва основното меню</li>
-                                    <li><b>Ctrl+k</b> - показва меню с командите</li>
-                                    <li><b>Ctrl+l</b> - старт / стоп на гласови команди</li>
-                                </ul>
-                            </div>
-                            <div class="link short">
-                                • гласови команди:
-                                <ul class="voice-commands" id="voice-commands">
-                                    <script>
-                                        const ul = document.getElementById("voice-commands");
-                                        Object.values(speech.commands)
-                                            .filter(isNaN)
-                                            .forEach((e) => {
-                                                const li = document.createElement("li");
-                                                li.textContent = e;
-                                                ul.appendChild(li);
-                                            });
-                                    </script>
-                                </ul>
-                            </div>
+        </div>
+        <div class="hystmodal" id="m-show-commands" aria-hidden="true">
+            <div class="hystmodal__wrap">
+                <div class="hystmodal__window" role="dialog" aria-modal="true">
+                    <button data-hystclose class="hystmodal__close">Затовори</button>
+                    <div class="modal-header">Команди</div>
+                    <div class="modal-body">
+                        <div class="link short">
+                            • клавишни комбинации:
+                            <ul class="voice-commands">
+                                <li><b>Ctrl+m</b> - показва основното меню</li>
+                                <li><b>Ctrl+k</b> - показва меню с командите</li>
+                                <li><b>Ctrl+l</b> - старт / стоп на гласови команди</li>
+                            </ul>
+                        </div>
+                        <div class="link short">
+                            • гласови команди:
+                            <ul class="voice-commands" id="voice-commands">
+                                <script>
+                                    const ul = document.getElementById("voice-commands");
+                                    Object.values(speech.commands)
+                                        .filter(isNaN)
+                                        .forEach((e) => {
+                                            const li = document.createElement("li");
+                                            li.textContent = e;
+                                            ul.appendChild(li);
+                                        });
+                                </script>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hystmodal" id="m-show-help" aria-hidden="true">
+            <div class="hystmodal__wrap">
+                <div class="hystmodal__window" role="dialog" aria-modal="true">
+                    <button data-hystclose class="hystmodal__close">Затовори</button>
+                    <div class="modal-header">Относно MSR</div>
+                    <div class="modal-body">
+                        <div class="manuals">
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+Ipsum has been the industry's standard dummy text ever since the 1500s, when an
+unknown printer took a galley of type and scrambled it to make a type specimen
+book. It has survived not only five centuries, but also the leap into electronic
+typesetting, remaining essentially unchanged. It was popularised in the 1960s with
+the release of Letraset sheets containing Lorem Ipsum passages, and more recently
+with desktop publishing software like Aldus PageMaker including versions of Lorem
+Ipsum.
                         </div>
                     </div>
                 </div>
