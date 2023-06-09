@@ -697,6 +697,7 @@
                         settings,
                         totalPrice,
                         htmlTitle: "ОПИС",
+                        htmlHeader: "Остатък",
                         htmlFooter: "ОСТАТЪК",
                     });
                 }
@@ -719,17 +720,18 @@
                         settings,
                         totalPrice,
                         htmlTitle: "РАЗХОД",
+                        htmlHeader: "Разход",
                         htmlFooter: "РАЗХОД",
                     });
                 }
 
-                function _printer({ htmlTitle, htmlFooter, body, settings, totalPrice }) {
+                function _printer({ htmlTitle, htmlHeader, htmlFooter, body, settings, totalPrice }) {
                     const w = window.open("", "PRINT");
                     const wadd = (str) => w.document.write(str);
                     const tableHeader = `<tr>
                                             <th colspan="2">Наименование</th>
                                             <th>Единична цена</th>
-                                            <th colspan="2">Остатък</th>
+                                            <th colspan="2">${htmlHeader}</th>
                                         </tr>
                                         <tr id="subheader">
                                             <td class="nobr"></td>
