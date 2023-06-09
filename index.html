@@ -525,6 +525,7 @@
                     tdId.innerText = table.getElementsByTagName("tr").length;
                     inputName.type = "text";
                     inputName.value = item.name;
+                    inputName.placeholder = "Име на продукта";
                     inputName.addEventListener("input", () => {
                         item.name = inputName.value;
                     }),
