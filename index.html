@@ -733,7 +733,7 @@
                         .filter((e) => e.outgoQuantity)
                         .map((item) => [
                             item.name,
-                            item.price,
+                            item.price.toFixed(2),
                             item.outgoQuantity,
                             (item.outgoQuantity * item.price).toFixed(2),
                         ]);
