@@ -626,6 +626,7 @@
                             if (inputPrice.changeBackground) {
                                 changeBackground(totalPriceEl);
                                 changeBackground(totalPriceRemainderEl);
+                                inputOutgoQuantity.changeBackground && changeBackground(totalOutgoPriceEl);
                             } else {
                                 inputPrice.changeBackground = true;
                             }
@@ -654,12 +655,6 @@
                             item.outgoQuantity = 0;
                         } else {
                             item.outgoQuantity = val;
-                            if (inputOutgoQuantity.changeBackground) {
-                                changeBackground(totalPriceRemainderEl);
-                                changeBackground(totalOutgoPriceEl);
-                            } else {
-                                inputOutgoQuantity.changeBackground = true;
-                            }
                         }
                         if (inputOutgoQuantity.changeBackground) {
                             changeBackground(totalPriceRemainderEl);
