@@ -661,6 +661,12 @@
                                 inputOutgoQuantity.changeBackground = true;
                             }
                         }
+                        if (inputOutgoQuantity.changeBackground) {
+                            changeBackground(totalPriceRemainderEl);
+                            changeBackground(totalOutgoPriceEl);
+                        } else {
+                            inputOutgoQuantity.changeBackground = true;
+                        }
                         if (val > valRemainder) showToast("Разходът надвишава наличността!");
                         updateRowPrice();
                         updateOutgo();
