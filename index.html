@@ -363,6 +363,13 @@
             #table-sort-down #table-sort-up {
                 display: inline;
             }
+            span.total-price {
+                background-color: transparent;
+                display: inline-block;
+                border-radius: 15px;
+                padding: 0px 4px;
+                transition: background-color 1s ease;
+            }
         </style>
     </head>
     <body onload="document.body.style.opacity='1'">
@@ -419,15 +426,15 @@
                     Общ остатък:
                 </td>
                 <td width="100px">
-                    <span id="total-price"></span>
+                    <span id="total-price" class="total-price"></span>
                 </td>
                 <td width="10px">/</td>
                 <td class="" width="100px">
-                    <span id="total-price-remainder"></span>
+                    <span id="total-price-remainder" class="total-price"></span>
                 </td>
                 <td class="right">Общ разход:</td>
                 <td class="left">
-                    <span id="total-price-outgo"></span>
+                    <span id="total-price-outgo" class="total-price"></span>
                 </td>
             </tr>
         </table>
@@ -493,6 +500,18 @@
                     totalOutgoPriceEl.textContent = totalPrice;
                     totalPriceRemainderEl.textContent = totalPriceRemainder();
                 };
+
+            function changeBackground(element) {
+                element.style.backgroundColor = "lightgreen";
+
+                if (this[element.id]) {
+                    clearTimeout(this[element.id]);
+                }
+
+                this[element.id] = setTimeout(() => {
+                    element.style.backgroundColor = "transparent";
+                }, 1000);
+            }
 
             function updateSettings() {
                 peroidRange.value = settings.peroidRange;
@@ -564,6 +583,7 @@
                     inputQuantity.step = "1";
                     inputQuantity.value = item.quantity;
                     inputQuantity.name = "form-quantity";
+                    inputQuantity.changeBackground = false;
                     inputQuantity.addEventListener("input", () => {
                         if (!inputQuantity.validity.valid) {
                             inputQuantity.value = "";
@@ -573,6 +593,11 @@
                         if (!Number.isNaN(val)) {
                             item.quantity = val;
                             inputPrice.disabled = false;
+                            if (inputQuantity.changeBackground) {
+                                changeBackground(totalPriceEl);
+                            } else {
+                                inputQuantity.changeBackground = true;
+                            }
                         } else {
                             item.quantity = "";
                             inputPrice.disabled = true;
@@ -588,6 +613,7 @@
                     inputPrice.value = item.price;
                     inputPrice.name = "form-price";
                     inputPrice.disabled = true;
+                    inputPrice.changeBackground = false;
                     inputPrice.addEventListener("input", () => {
                         if (!inputPrice.validity.valid) {
                             inputPrice.value = "";
@@ -596,6 +622,11 @@
                         if (!Number.isNaN(val)) {
                             item.price = val;
                             inputOutgoQuantity.disabled = false;
+                            if (inputPrice.changeBackground) {
+                                changeBackground(totalPriceEl);
+                            } else {
+                                inputPrice.changeBackground = true;
+                            }
                         } else {
                             item.price = "";
                             inputOutgoQuantity.disabled = true;
@@ -610,6 +641,7 @@
                     inputOutgoQuantity.value = item.outgoQuantity;
                     inputOutgoQuantity.name = "form-outgoquantity";
                     inputOutgoQuantity.disabled = true;
+                    inputOutgoQuantity.changeBackground = false;
                     inputOutgoQuantity.addEventListener("input", () => {
                         if (!inputOutgoQuantity.validity.valid) {
                             inputOutgoQuantity.value = "";
@@ -620,6 +652,12 @@
                             item.outgoQuantity = 0;
                         } else {
                             item.outgoQuantity = val;
+                            if (inputOutgoQuantity.changeBackground) {
+                                changeBackground(totalPriceRemainderEl);
+                                changeBackground(totalOutgoPriceEl);
+                            } else {
+                                inputOutgoQuantity.changeBackground = true;
+                            }
                         }
                         if (val > valRemainder) showToast("Разходът надвишава наличността!");
                         updateRowPrice();
