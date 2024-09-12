@@ -300,12 +300,12 @@
             div#header > div#title {
                 font-weight: bold;
                 font-size: larger;
-                color: #e7e4e4;
-                text-shadow: 2px 2px 4px #000;
+                color: #929292;
                 padding: 0 0 16px 0;
             }
             div#header div#body {
                 font-size: smaller;
+                color: #929292;
             }
             div#header div.header {
                 margin-top: 10px;
@@ -324,10 +324,11 @@
             }
             div#header input#institution,
             div#header input#employee {
-                font-size: normal;
+                font-size: 100%;
                 font-weight: bold;
                 width: 30%;
-                color: rgb(58, 57, 57);
+                color: #929292;
+                padding: 0 0 16px 0;
             }
             input[type="number"]::-webkit-outer-spin-button,
             input[type="number"]::-webkit-inner-spin-button {
@@ -384,7 +385,7 @@
                 <input type="text" id="institution" placeholder="Учебно заведение" />
             </div>
             <div class="header" id="body">
-                за период
+                <span>за период</span>
                 <input type="text" id="period-range" placeholder="липват данни" />
             </div>
         </div>
@@ -501,6 +502,10 @@
                         .toFixed(2);
                     totalOutgoPriceEl.textContent = totalPrice;
                     totalPriceRemainderEl.textContent = totalPriceRemainder();
+                },
+                updateTotalAndOutgo = () => {
+                    updateTotal();
+                    updateOutgo();
                 };
 
             function changeBackground(element) {
@@ -535,9 +540,6 @@
                         .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
                 ).toFixed(2);
             }
-
-            // updateTotal();
-            // updateOutgo();
 
             const row$ = fromEvent(addBtn, "click").pipe(map(() => ({ name: "", quantity: "", price: "" }))),
                 remove$ = fromEvent(removeBtn, "click"),
@@ -643,8 +645,7 @@
                             inputOutgoQuantity.disabled = true;
                         }
                         updateRowPrice();
-                        updateTotal();
-                        updateOutgo();
+                        updateTotalAndOutgo();
                     });
                     inputOutgoQuantity.type = "number";
                     inputOutgoQuantity.min = "0";
@@ -679,8 +680,7 @@
                     removeBtn.className = "remove-row";
                     removeBtn.addEventListener("click", () => {
                         items = items.filter((i) => i !== item);
-                        updateTotal();
-                        updateOutgo();
+                        updateTotalAndOutgo();
                         tr.remove();
                         table.querySelectorAll("tr").forEach((e, i) => {
                             e.querySelector("td") && (e.querySelector("td").innerText = i);
@@ -715,15 +715,13 @@
             row$.subscribe((item) => {
                 items = [...items, item];
                 renderItemRow(item);
-                updateTotal();
-                updateOutgo();
+                updateTotalAndOutgo();
             });
 
             remove$.subscribe(() => {
                 if (items.length) {
                     const item = items.pop();
-                    updateTotal();
-                    updateOutgo();
+                    updateTotalAndOutgo();
                     table.querySelector("tbody tr:last-child").remove();
                     changeBackgroundAll();
                 }
@@ -972,8 +970,7 @@
                         inputs[property].dispatchEvent(new Event("input"));
                     }
                 });
-                updateTotal();
-                updateOutgo();
+                updateTotalAndOutgo();
                 updateSettings();
             }
 
@@ -1032,8 +1029,7 @@
                     }
                 });
 
-                updateTotal();
-                updateOutgo();
+                updateTotalAndOutgo();
 
                 function sort({ down, up }) {
                     if (up) {
