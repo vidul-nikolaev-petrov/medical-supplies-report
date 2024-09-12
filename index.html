@@ -425,16 +425,16 @@
             <tr>
                 <td class="right">
                     <span id="result-quantity">Общо количество: <span id="total-quantity"></span></span>
-                    Общ остатък:
+                    Общо:
                 </td>
                 <td width="100px">
                     <span id="total-price" class="total-price"></span>
                 </td>
-                <td width="10px">/</td>
+                <td class="right">Остатък:</td>
                 <td class="" width="100px">
                     <span id="total-price-remainder" class="total-price"></span>
                 </td>
-                <td class="right">Общ разход:</td>
+                <td class="right">Разход:</td>
                 <td class="left">
                     <span id="total-price-outgo" class="total-price"></span>
                 </td>
@@ -513,6 +513,12 @@
                 this[element.id] = setTimeout(() => {
                     element.style.backgroundColor = "transparent";
                 }, 1000);
+            }
+
+            function changeBackgroundAll() {
+                changeBackground(totalPriceEl);
+                changeBackground(totalPriceRemainderEl);
+                changeBackground(totalOutgoPriceEl);
             }
 
             function updateSettings() {
@@ -679,6 +685,7 @@
                         table.querySelectorAll("tr").forEach((e, i) => {
                             e.querySelector("td") && (e.querySelector("td").innerText = i);
                         });
+                        changeBackgroundAll();
                     });
                     tdOutgoQuantity.appendChild(inputOutgoQuantity);
                     tdAction.appendChild(removeBtn);
@@ -718,6 +725,7 @@
                     updateTotal();
                     updateOutgo();
                     table.querySelector("tbody tr:last-child").remove();
+                    changeBackgroundAll();
                 }
             });
 
