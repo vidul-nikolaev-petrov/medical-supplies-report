@@ -640,7 +640,7 @@
                         if (!inputPrice.validity.valid) {
                             inputPrice.value = "";
                         }
-                        const val = Number(inputPrice.value);
+                        const val = parseFloat(inputPrice.value);
                         if (!Number.isNaN(val)) {
                             item.price = Math.round(val * 100);
                             inputOutgoQuantity.disabled = false;
@@ -780,7 +780,7 @@
                         .reduce((acc, item) => acc + item.price * item.quantity, 0)
                         .$toFixed();
 
-                    totalPrice = (totalPrice - totalPriceOutgo).$toFixed();
+                    totalPrice = (totalPrice - totalPriceOutgo) ;
 
                     _printer({
                         body,
