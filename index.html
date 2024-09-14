@@ -5,7 +5,7 @@
         <meta name="description" content="Лекарствени Отчети" />
         <meta name="author" content="Видул Николаев Петров" />
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
-        <meta name="version" content="1.0.8" />
+        <meta name="version" content="1.1.0" />
         <title>Лекарствен Отчет</title>
         <script src="libs/js/rxjs.umd.min.js"></script>
         <script src="libs/js/easepick.min.js"></script>
@@ -462,6 +462,10 @@
         </div>
         <div id="print"></div>
         <script>
+            Number.prototype.$toFixed = function () {
+                return this / 100;
+            };
+
             const { fromEvent } = rxjs;
             const { map, debounceTime } = rxjs.operators;
             let items = [],
@@ -497,7 +501,7 @@
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
                             .reduce((acc, item) => acc + item.price * item.quantity, 0)
-                            .toFixed(2);
+                            .$toFixed();
                     totalQuantityEl.textContent = totalQuantity;
                     totalPriceEl.textContent = totalPrice;
                     totalPriceRemainderEl.textContent = totalPriceRemainder();
@@ -506,7 +510,7 @@
                     const totalPrice = items
                         .filter((e) => e.outgoQuantity)
                         .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
-                        .toFixed(2);
+                        .$toFixed();
                     totalOutgoPriceEl.textContent = totalPrice;
                     totalPriceRemainderEl.textContent = totalPriceRemainder();
                 },
@@ -545,7 +549,7 @@
                     items
                         .filter((e) => e.outgoQuantity)
                         .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
-                ).toFixed(2);
+                ).$toFixed();
             }
 
             const row$ = fromEvent(addBtn, "click").pipe(map(() => ({ name: "", quantity: "", price: "" }))),
@@ -570,17 +574,17 @@
                         updateRowPrice = () => {
                             if (inputQuantity.value && inputPrice.value) {
                                 tdTotalPrice.innerText = (
-                                    parseInt(inputQuantity.value, 10) * parseFloat(inputPrice.value)
+                                    Number(inputQuantity.value) * Number(inputPrice.value)
                                 ).toFixed(2);
                             } else {
                                 tdTotalPrice.innerText = "";
                             }
                             if (inputQuantity.value && inputPrice.value && inputOutgoQuantity.value) {
                                 tdOutgoPrice.innerText = (
-                                    parseInt(inputOutgoQuantity.value, 10) * parseFloat(inputPrice.value)
+                                    Number(inputOutgoQuantity.value) * Number(inputPrice.value)
                                 ).toFixed(2);
                             } else {
-                                tdOutgoPrice.innerText = (0).toFixed(2);
+                                tdOutgoPrice.innerText = (0).$toFixed();
                             }
                         };
                     tdId.innerText = table.getElementsByTagName("tr").length;
@@ -636,9 +640,9 @@
                         if (!inputPrice.validity.valid) {
                             inputPrice.value = "";
                         }
-                        const val = parseFloat(inputPrice.value);
+                        const val = Number(inputPrice.value);
                         if (!Number.isNaN(val)) {
-                            item.price = val;
+                            item.price = Math.round(val * 100);
                             inputOutgoQuantity.disabled = false;
                             if (inputPrice.changeBackground) {
                                 changeBackground(totalPriceEl);
@@ -765,18 +769,18 @@
                         .filter((e) => e.quantity > e.outgoQuantity)
                         .map((item) => [
                             item.name,
-                            item.price.toFixed(2),
+                            item.price.$toFixed(),
                             item.quantity - item.outgoQuantity,
-                            ((item.quantity - item.outgoQuantity) * item.price).toFixed(2),
+                            ((item.quantity - item.outgoQuantity) * item.price).$toFixed(),
                         ]);
                     const totalPriceOutgo = items
                         .reduce((acc, item) => acc + item.price * item.outgoQuantity, 0)
-                        .toFixed(2);
+                        .$toFixed();
                     let totalPrice = items
                         .reduce((acc, item) => acc + item.price * item.quantity, 0)
-                        .toFixed(2);
+                        .$toFixed();
 
-                    totalPrice = (totalPrice - totalPriceOutgo).toFixed(2);
+                    totalPrice = (totalPrice - totalPriceOutgo).$toFixed();
 
                     _printer({
                         body,
@@ -793,13 +797,13 @@
                         .filter((e) => e.outgoQuantity)
                         .map((item) => [
                             item.name,
-                            item.price.toFixed(2),
+                            item.price.$toFixed(),
                             item.outgoQuantity,
-                            (item.outgoQuantity * item.price).toFixed(2),
+                            (item.outgoQuantity * item.price).$toFixed(),
                         ]);
                     const totalPrice = items
                         .reduce((acc, item) => acc + item.price * item.outgoQuantity, 0)
-                        .toFixed(2);
+                        .$toFixed();
 
                     _printer({
                         body,
@@ -973,7 +977,11 @@
                 items.forEach((i) => {
                     const inputs = renderItemRow(i);
                     for (const property in inputs) {
-                        inputs[property].value = i[property];
+                        if (property == "price") {
+                            inputs[property].value = i[property].$toFixed();
+                        } else {
+                            inputs[property].value = i[property];
+                        }
                         inputs[property].dispatchEvent(new Event("input"));
                     }
                 });
