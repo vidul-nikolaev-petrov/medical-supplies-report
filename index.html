@@ -780,7 +780,7 @@
                         .reduce((acc, item) => acc + item.price * item.quantity, 0)
                         .$toFixed();
 
-                    totalPrice = (totalPrice - totalPriceOutgo) ;
+                    totalPrice = (totalPrice - totalPriceOutgo).toFixed(2);
 
                     _printer({
                         body,
@@ -803,7 +803,8 @@
                         ]);
                     const totalPrice = items
                         .reduce((acc, item) => acc + item.price * item.outgoQuantity, 0)
-                        .$toFixed();
+                        .$toFixed()
+                        .toFixed(2);
 
                     _printer({
                         body,
