@@ -43,9 +43,12 @@
                 width: 60px;
                 height: auto;
                 opacity: 1;
+                filter: grayscale(100%);
+                transition: filter 0.5s ease;
             }
             .logo:hover {
                 cursor: pointer;
+                filter: grayscale(0%);
             }
 
             .speech {
@@ -294,21 +297,24 @@
 
             div#header {
                 width: 100%;
-                margin: 4% 0 4% 0;
+                margin: auto;
+                margin-top: -10px;
+                width: 70%;
                 text-align: center;
+                background-color: #929292;
             }
             div#header > div#title {
                 font-weight: bold;
                 font-size: larger;
-                color: #929292;
-                padding: 0 0 16px 0;
+                color: #e7e5e5;
+                padding: 32px 0 16px 0;
             }
             div#header div#body {
                 font-size: smaller;
-                color: #929292;
+                color: #e7e5e5;
             }
             div#header div.header {
-                margin-top: 10px;
+                color: #e7e5e5;
             }
             div#header input {
                 border: none;
@@ -316,19 +322,22 @@
                 background: transparent;
                 text-align: center;
                 font-size: small;
+                color: #e7e5e5;
             }
             div#header input#period-range {
-                /* border-bottom: 1px solid rgb(75, 75, 75); */
-                width: 13%;
+                width: 16%;
+                padding-bottom: 26px;
+            }
+            div#header span#period {
                 font-weight: bold;
+                margin-right: -20px;
             }
             div#header input#institution,
             div#header input#employee {
-                font-size: 100%;
-                font-weight: bold;
+                font-size: 110%;
                 width: 30%;
-                color: #929292;
-                padding: 0 0 16px 0;
+                color: #e7e5e5;
+                padding: 8px 0 16px 0;
             }
             input[type="number"]::-webkit-outer-spin-button,
             input[type="number"]::-webkit-inner-spin-button {
@@ -385,7 +394,7 @@
                 <input type="text" id="institution" placeholder="Учебно заведение" />
             </div>
             <div class="header" id="body">
-                <span>за период</span>
+                <span id="period">за период:</span>
                 <input type="text" id="period-range" placeholder="липват данни" />
             </div>
         </div>
@@ -1028,8 +1037,6 @@
                         inputs[property].dispatchEvent(new Event("input"));
                     }
                 });
-
-                updateTotalAndOutgo();
 
                 function sort({ down, up }) {
                     if (up) {
