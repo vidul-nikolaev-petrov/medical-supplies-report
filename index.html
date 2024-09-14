@@ -501,7 +501,7 @@
                     const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0),
                         totalPrice = items
                             .reduce((acc, item) => acc + item.price * item.quantity, 0)
-                            .$toFixed();
+                            .$toFixed().toFixed(2);
                     totalQuantityEl.textContent = totalQuantity;
                     totalPriceEl.textContent = totalPrice;
                     totalPriceRemainderEl.textContent = totalPriceRemainder();
@@ -510,7 +510,7 @@
                     const totalPrice = items
                         .filter((e) => e.outgoQuantity)
                         .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
-                        .$toFixed();
+                        .$toFixed().toFixed(2);
                     totalOutgoPriceEl.textContent = totalPrice;
                     totalPriceRemainderEl.textContent = totalPriceRemainder();
                 },
@@ -549,7 +549,7 @@
                     items
                         .filter((e) => e.outgoQuantity)
                         .reduce((acc, item) => acc + item.outgoQuantity * item.price, 0)
-                ).$toFixed();
+                ).$toFixed().toFixed(2);
             }
 
             const row$ = fromEvent(addBtn, "click").pipe(map(() => ({ name: "", quantity: "", price: "" }))),
