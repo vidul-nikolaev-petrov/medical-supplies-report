@@ -4,7 +4,9 @@ use strict;
 use warnings;
 
 # File to be processed
-my $filename = 'sampleData.json';
+my $filename = $ARGV[0];
+
+$filename or die "No filename provided!";
 
 # Open the file for reading
 open(my $in, '<', $filename) or die "Could not open file '$filename': $!";
