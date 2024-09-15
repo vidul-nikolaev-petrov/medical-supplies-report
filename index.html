@@ -5,7 +5,7 @@
         <meta name="description" content="Лекарствени Отчети" />
         <meta name="author" content="Видул Николаев Петров" />
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
-        <meta name="version" content="1.1.0" />
+        <meta name="version" content="1.1.1" />
         <title>Лекарствен Отчет</title>
         <script src="libs/js/rxjs.umd.min.js"></script>
         <script src="libs/js/easepick.min.js"></script>
@@ -979,8 +979,12 @@
                 items.forEach((i) => {
                     const inputs = renderItemRow(i);
                     for (const property in inputs) {
-                        if (property == "price") {
-                            inputs[property].value = i[property].$toFixed();
+                        if (property === "price") {
+                            if (i[property]) {
+                                inputs[property].value = i[property].$toFixed();
+                            } else {
+                                inputs[property].value = (0).$toFixed();
+                            }
                         } else {
                             inputs[property].value = i[property];
                         }
@@ -1038,13 +1042,17 @@
                 clearTableRecords();
 
                 items = tmp;
-                items.forEach((e) => {
-                    const inputs = renderItemRow(e);
+                items.forEach((i) => {
+                    const inputs = renderItemRow(i);
                     for (const property in inputs) {
-                        if (property == "price") {
-                            inputs[property].value = e[property].$toFixed();
+                        if (property === "price") {
+                            if (i[property]) {
+                                inputs[property].value = i[property].$toFixed();
+                            } else {
+                                inputs[property].value = (0).$toFixed();
+                            }
                         } else {
-                            inputs[property].value = e[property];
+                            inputs[property].value = i[property];
                         }
                         inputs[property].dispatchEvent(new Event("input"));
                     }
