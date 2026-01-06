@@ -7,11 +7,11 @@
         <meta name="keywords" content="Отчет, Приход, Разход, Лекарства" />
         <meta name="version" content="1.1.1" />
         <title>Лекарствен Отчет</title>
-        <script src="libs/js/rxjs.umd.min.js"></script>
         <script src="libs/js/easepick.min.js"></script>
         <script src="libs/js/hystmodal.min.js"></script>
-        <script src="libs/js/toastify.js"></script>
         <script src="libs/js/moment.js"></script>
+        <script src="libs/js/rxjs.umd.min.js"></script>
+        <script src="libs/js/toastify.js"></script>
         <script src="libs/js/words2numbers.js"></script>
         <script type="module">
             import nums2wordsBG from "./libs/js/nums2wordsBG.js";
@@ -930,7 +930,7 @@
                 }
 
                 function numberToWord(number) {
-                    return nums2wordsBG.currency(number);
+                    return nums2wordsBG.currency(number, { currency: "eur" });
                 }
 
                 printer.printRemainder = remainder;
